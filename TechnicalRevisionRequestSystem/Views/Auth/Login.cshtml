@@ -1,0 +1,158 @@
+﻿@{
+	Layout = null;
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TRRS Login</title>
+	<script src="~/css/tailwind.min.css"></script>
+
+	<style>
+		body {
+			/*background: linear-gradient(135deg, #0f172a, #1e293b);*/
+			background: url('/images/trrfbg_final.png') no-repeat center center fixed;
+			background-size: cover;
+
+		}
+
+		/* Glass card */
+		.glass-card {
+			position: relative;
+			/* LIGHT GLASS (matches your image) */
+			background: rgba(255, 255, 255, 0.35);
+			backdrop-filter: blur(14px);
+			-webkit-backdrop-filter: blur(14px);
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			border-radius: 16px;
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+			color: #1f2937; /* dark text for readability */
+
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.glass-input {
+			width: 100%;
+			padding: 10px 12px;
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.6);
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			outline: none;
+			color: #111827;
+			text-align: center;
+		}
+
+			.glass-input::placeholder {
+				color: rgba(17, 24, 39, 0.5);
+			}
+
+			.glass-input:focus {
+				border-color: #3b82f6;
+				box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
+			}
+
+		.glass-button {
+			width: 100%;
+			padding: 10px;
+			border-radius: 8px;
+			background: rgba(37, 99, 235, 0.95);
+			color: white;
+			font-weight: 600;
+			transition: 0.2s;
+		}
+
+			.glass-button:hover {
+				background: rgba(29, 78, 216, 1);
+			}
+		.divider-with-text {
+			/* This creates a line before and after the text */
+			overflow: hidden;
+			text-align: center;
+		}
+
+			.divider-with-text span {
+				/* This is the text in the middle */
+				display: inline-block;
+				position: relative;
+				padding: 0 20px; /* Space around the text (this is the padding *inside* the span) */
+				font-size: 0.9em;
+				color: #888;
+			}
+
+				.divider-with-text span:before,
+				.divider-with-text span:after {
+					/* This styles the actual line */
+					content: "";
+					position: absolute;
+					top: 50%;
+					width: 9999px;
+					height: 1px;
+					background: #ccc;
+				}
+
+				.divider-with-text span:before {
+					right: 100%; /* Place the line to the left of the text */
+					/* --- CHANGED --- */
+					margin-right: 5px; /* Reduced the space between line and text on the left */
+					/* --------------- */
+				}
+
+				.divider-with-text span:after {
+					left: 100%; /* Place the line to the right of the text */
+					/* --- CHANGED --- */
+					margin-left: 5px; /* Reduced the space between line and text on the right */
+					/* --------------- */
+				}
+	</style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+
+	<div class="glass-card w-full max-w-md p-8">
+
+		<!-- Logos -->
+		<div class="text-center mb-6">
+			<img src="~/images/MCCLogo.gif" class="mx-auto max-w-[140px]" />
+		</div>
+
+		<div class="text-center mb-6">
+			<img src="~/images/trrf_logo.png" class="mx-auto max-w-[180px]" />
+		</div>
+
+		<!-- Divider text -->
+		<div class="text-center mb-6 text-white/80 font-medium divider-with-text">
+			<span>Please enter your credentials </span>
+		</div>
+
+		<!-- Form -->
+		<form method="post" action="/Auth/Login" class="space-y-4">
+
+			<div>
+				<label class="text-sm text-white/80">Username</label>
+				<input type="text" name="username" class="glass-input mt-1" required placeholder="Username" />
+			</div>
+
+			<div>
+				<label class="text-sm text-white/80">Password</label>
+				<input type="password" name="password" class="glass-input mt-1" required placeholder="Password" />
+			</div>
+
+			@if (ViewBag.ErrorMessage != null)
+			{
+				<div class="text-red-300 text-sm">
+					@ViewBag.ErrorMessage
+				</div>
+			}
+
+			<button type="submit" class="glass-button">
+				Login
+			</button>
+
+		</form>
+
+	</div>
+
+</body>
+</html>

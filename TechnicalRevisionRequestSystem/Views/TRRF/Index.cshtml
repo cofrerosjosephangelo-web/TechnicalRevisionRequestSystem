@@ -1,0 +1,718 @@
+﻿@{
+	Layout = "_Layout";
+}
+
+
+
+<script src="~/js/tailwind.min.css"></script>
+<link href="~/js/tabulator.min.css" rel="stylesheet">
+<script src="~/js/tabulator.min.js" asp-append-version="true"></script>
+
+<style>
+	.glass-card {
+		position: relative;
+		background: rgba(255, 255, 255, 0.35);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		border-radius: 16px;
+		box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+		color: #1f2937;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.tabulator-glass {
+		padding: 14px;
+		overflow: hidden;
+	}
+
+	/* Main Tabulator container */
+	.tabulator {
+		background: transparent !important;
+		border: none !important;
+		color: #1f2937;
+		font-size: 14px;
+	}
+
+		/* Header area */
+		.tabulator .tabulator-header {
+			background: rgba(255, 255, 255, 0.45) !important;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.45) !important;
+			color: #334155;
+			font-weight: 700;
+		}
+
+			/* Header cells */
+			.tabulator .tabulator-header .tabulator-col {
+				background: transparent !important;
+				border-right: 1px solid rgba(255, 255, 255, 0.35) !important;
+			}
+
+			/* Header text */
+			.tabulator .tabulator-header .tabulator-col-title {
+				color: #1f2937;
+			}
+
+		/* Rows */
+		.tabulator .tabulator-row {
+			background: rgba(255, 255, 255, 0.25) !important;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
+			color: #1f2937;
+		}
+
+			/* Alternating rows */
+			.tabulator .tabulator-row:nth-child(even) {
+				background: rgba(255, 255, 255, 0.16) !important;
+			}
+
+			/* Hover row */
+			.tabulator .tabulator-row:hover {
+				background: rgba(255, 255, 255, 0.5) !important;
+			}
+
+			/* Selected row */
+			.tabulator .tabulator-row.tabulator-selected {
+				background: rgba(59, 130, 246, 0.18) !important;
+			}
+
+		/* Cells */
+		.tabulator .tabulator-cell {
+			border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+		}
+
+		/* Footer / pagination if used */
+		.tabulator .tabulator-footer {
+			background: rgba(255, 255, 255, 0.35) !important;
+			border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+		}
+
+		/* Scrollbar */
+		.tabulator .tabulator-tableholder::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+
+		.tabulator .tabulator-tableholder::-webkit-scrollbar-thumb {
+			background: rgba(100, 116, 139, 0.35);
+			border-radius: 999px;
+		}
+
+		.tabulator .tabulator-tableholder::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.15);
+		}
+</style>
+
+
+<div class="glass-card tabulator-glass">
+
+	<div class="flex items-center justify-between mb-4">
+		<h2 class="text-lg font-semibold text-slate-700">
+			TRRS Tracking
+		</h2>
+
+		<div class="flex items-center gap-2">
+			<button type="button"
+					id="openSubmitDrawer"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">
+				<span>+</span>
+				<span>Submit New</span>
+			</button>
+
+			<button type="button"
+					id="exportExcelBtn"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 text-white text-sm font-medium border border-white/40 hover:bg-black/70 transition">
+				<i class="fa fa-file-excel"></i>
+				<span>Export Excel Report</span>
+			</button>
+		</div>
+	</div>
+
+	<div id="main-table" class="w-full"></div>
+
+</div>
+
+<div id="submitDrawerOverlay"
+	 class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden z-40"></div>
+
+<div id="submitDrawer"
+	 class="fixed top-0 right-0 h-full w-full max-w-4xl bg-white/60 backdrop-blur-xl border-l border-white/40 shadow-2xl z-50 translate-x-full transition-transform duration-300">
+
+	<div class="h-16 px-6 flex items-center justify-between border-b border-white/40">
+		<h2 class="text-lg font-semibold text-slate-700"><b>+</b>&nbsp;Submit New TRRF</h2>
+
+		<button type="button"
+				id="closeSubmitDrawer"
+				class="p-2 rounded-lg hover:bg-white/60 transition">
+			✕
+		</button>
+	</div>
+
+	
+	<form class="flex h-[calc(100vh-64px)] flex-col">
+		<div class="flex-1 overflow-y-auto p-6">
+			<!-- your fields here -->
+			<div class="glass-card p-4">
+
+				<div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mt-2">
+
+					<!-- Date Prepared -->
+					<div class="w-full lg:w-64">
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Date Prepared
+						</label>
+
+						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-calendar-days"></i>
+							</span>
+
+							<input type="date"
+								   id="datePreparedTxt"
+								   name="datePrepared"
+								   class="w-full min-w-0 px-3 py-1.5 text-sm text-slate-700 bg-white/30 outline-none" />
+						</div>
+					</div>
+
+					<!-- Right Side: MP / PD + TRRF no. -->
+					<div class="flex flex-col sm:flex-row sm:items-end sm:justify-end gap-3">
+
+						<!-- MP / PD Switches -->
+						<div id="TrrfSwitchdiv" class="flex items-center gap-4 h-9">
+
+							<!-- MP -->
+							<label for="mpSwitch"
+								   class="flex items-center gap-2 cursor-pointer select-none">
+								<input type="checkbox"
+									   id="mpSwitch"
+									   value="MP"
+									   class="peer sr-only switch-group" />
+
+								<span class="relative w-11 h-6 rounded-full bg-slate-300 transition
+                                 peer-checked:bg-slate-800
+                                 after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                 after:w-5 after:h-5 after:rounded-full after:bg-white
+                                 after:shadow after:transition
+                                 peer-checked:after:translate-x-5">
+								</span>
+
+								<span class="text-sm font-medium text-slate-700">MP</span>
+							</label>
+
+							<!-- PD -->
+							<label for="pdSwitch"
+								   class="flex items-center gap-2 cursor-pointer select-none">
+								<input type="checkbox"
+									   id="pdSwitch"
+									   value="PD"
+									   class="peer sr-only switch-group" />
+
+								<span class="relative w-11 h-6 rounded-full bg-slate-300 transition
+                                 peer-checked:bg-slate-800
+                                 after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                 after:w-5 after:h-5 after:rounded-full after:bg-white
+                                 after:shadow after:transition
+                                 peer-checked:after:translate-x-5">
+								</span>
+
+								<span class="text-sm font-medium text-slate-700">PD</span>
+							</label>
+
+						</div>
+
+						<!-- TRRF Number Input Group -->
+						<div>
+							<label class="block text-sm font-semibold text-slate-700 mb-2 sm:invisible">
+								TRRF #
+							</label>
+
+							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+								<span class="inline-flex min-w-36 items-center px-3 text-sm font-medium text-slate-600 bg-white/60 border-r border-white/40">
+									<i class="fa-solid fa-hashtag"></i>
+									<span class="ml-2">TRRF no.</span>
+								</span>
+
+								<input type="text"
+									   id="trrfNoTxt"
+									   readonly
+									   class="w-36 px-3 py-1.5 text-sm text-slate-700 bg-white/30 outline-none cursor-not-allowed" />
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="glass-card p-4 mt-4">
+
+				<!-- Card Header -->
+				<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+					<i class="fa-solid fa-box-open text-slate-600"></i>
+
+					<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+						Product Information
+					</h3>
+				</div>
+
+
+				<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
+
+					<!-- Customer Name -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Customer Name
+						</label>
+
+						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-user"></i>
+							</span>
+
+							<input type="text"
+								   id="customerNameTxt"
+								   name="customerName"
+								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+								   placeholder="Customer name" />
+						</div>
+					</div>
+
+					<!-- Product Name -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Product Name
+						</label>
+
+						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-box"></i>
+							</span>
+
+							<input type="text"
+								   id="productNameTxt"
+								   name="productName"
+								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+								   placeholder="Product name" />
+						</div>
+					</div>
+
+					<!-- Mold # -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Mold #
+						</label>
+
+						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-hashtag"></i>
+							</span>
+
+							<input type="number"
+								   id="moldNoTxt"
+								   name="moldNo"
+								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+								   placeholder="Mold #" />
+						</div>
+					</div>
+
+					<!-- Part / Model # -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Part / Model #
+						</label>
+
+						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-cube"></i>
+							</span>
+
+							<input type="text"
+								   id="partModelNoTxt"
+								   name="partModelNo"
+								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+								   placeholder="Part / Model #" />
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- Third Row: Problem Details -->
+			<div class="glass-card p-4 mt-4">
+
+				<!-- Card Header -->
+				<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+					<i class="fa-solid fa-triangle-exclamation text-slate-600"></i>
+
+					<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+						Problem Details
+					</h3>
+				</div>
+
+				<!-- First Part -->
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+					<!-- Encountered Problem -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Encountered Problem
+						</label>
+
+						<div class="flex rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md overflow-hidden">
+							<span class="inline-flex items-start px-3 py-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-circle-exclamation"></i>
+							</span>
+
+							<textarea id="encounteredProblemTxt"
+									  name="encounteredProblem"
+									  rows="5"
+									  class="w-full min-w-0 resize-none px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+									  placeholder="Describe the encountered problem"></textarea>
+						</div>
+					</div>
+
+					<!-- Machine Name -->
+					<div>
+						<label class="block text-sm font-semibold text-slate-700 mb-2">
+							Machine Name
+						</label>
+
+						<div class="flex rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md overflow-hidden">
+							<span class="inline-flex items-start px-3 py-3 text-slate-500 bg-white/60 border-r border-white/40">
+								<i class="fa-solid fa-industry"></i>
+							</span>
+
+							<textarea id="machineNameTxt"
+									  name="machineName"
+									  rows="5"
+									  class="w-full min-w-0 resize-none px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+									  placeholder="Machine name / details"></textarea>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Second Part: Root Cause + Proposed Action Plan -->
+				<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+
+					<!-- Root Cause -->
+					<div class="rounded-xl border border-white/40 bg-white/25 p-4">
+
+						<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+							<i class="fa-solid fa-magnifying-glass-chart text-slate-600"></i>
+							<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+								Root Cause
+							</h4>
+						</div>
+
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-gears text-slate-500 w-5"></i>
+								<input type="checkbox" id="wearTearSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Wear &amp; Tear</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-screwdriver-wrench text-slate-500 w-5"></i>
+								<input type="checkbox" id="machineErrorSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Machine Error</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-clock-rotate-left text-slate-500 w-5"></i>
+								<input type="checkbox" id="prevImpvtSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Effect of Prev. Impvt</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-pen-ruler text-slate-500 w-5"></i>
+								<input type="checkbox" id="designErrorSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Design Error</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-hammer text-slate-500 w-5"></i>
+								<input type="checkbox" id="fabricationErrorSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Fabrication Error</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-user-check text-slate-500 w-5"></i>
+								<input type="checkbox" id="customerReqSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Customer Req't</span>
+							</label>
+
+						</div>
+
+						<div class="mt-4">
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								Details
+							</label>
+
+							<textarea id="rootCauseDetailsTxt"
+									  rows="5"
+									  class="w-full resize-none rounded-lg border border-white/40 bg-white/40 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+									  placeholder="Root cause details"></textarea>
+						</div>
+
+						<div class="mt-4">
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								<i class="fa-solid fa-paperclip mr-1"></i>
+								Attachment
+							</label>
+
+							<input type="file"
+								   id="rootCauseAttachment"
+								   class="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700" />
+						</div>
+
+					</div>
+
+					<!-- Proposed Action Plan -->
+					<div class="rounded-xl border border-white/40 bg-white/25 p-4">
+
+						<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+							<i class="fa-solid fa-list-check text-slate-600"></i>
+							<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+								Proposed Action Plan
+							</h4>
+						</div>
+
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-wrench text-slate-500 w-5"></i>
+								<input type="checkbox" id="repairSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Repair</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-sliders text-slate-500 w-5"></i>
+								<input type="checkbox" id="adjustmentSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Adjustment</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-pen-to-square text-slate-500 w-5"></i>
+								<input type="checkbox" id="revisionSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Revision</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-repeat text-slate-500 w-5"></i>
+								<input type="checkbox" id="replacementSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Replacement</span>
+							</label>
+
+							<label class="flex items-center gap-2 cursor-pointer select-none">
+								<i class="fa-solid fa-flask-vial text-slate-500 w-5"></i>
+								<input type="checkbox" id="trialTestingSwitch" class="peer sr-only" />
+								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
+								<span class="text-sm font-medium text-slate-700">Trial / Testing</span>
+							</label>
+
+							<div class="hidden sm:block min-h-[60px]"></div>
+
+						</div>
+
+						<div class="mt-4">
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								Details
+							</label>
+
+							<textarea id="actionPlanDetailsTxt"
+									  rows="5"
+									  class="w-full resize-none rounded-lg border border-white/40 bg-white/40 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+									  placeholder="Proposed action plan details"></textarea>
+						</div>
+
+						<div class="mt-4">
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								<i class="fa-solid fa-paperclip mr-1"></i>
+								Attachment
+							</label>
+
+							<input type="file"
+								   id="actionPlanAttachment"
+								   class="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700" />
+						</div>
+
+					</div>
+
+				</div>
+
+				<!-- Third Part: Containment -->
+				<div class="rounded-xl border border-white/40 bg-white/25 p-4 mt-4">
+
+					<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+						<i class="fa-solid fa-boxes-stacked text-slate-600"></i>
+
+						<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+							Containment of Consumables, Parts / Components and Accessories
+						</h4>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+						<!-- Spare Yes / No -->
+						<div>
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								<i class="fa-solid fa-circle-question mr-1"></i>
+								Does it have Spare?
+							</label>
+
+							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md w-fit">
+								<label class="cursor-pointer">
+									<input type="radio"
+										   name="hasSpare"
+										   value="Yes"
+										   class="peer sr-only" />
+
+									<span class="inline-flex px-5 py-2 text-sm font-semibold text-slate-600 bg-white/30 transition peer-checked:bg-slate-800 peer-checked:text-white">
+										Yes
+									</span>
+								</label>
+
+								<label class="cursor-pointer border-l border-white/40">
+									<input type="radio"
+										   name="hasSpare"
+										   value="No"
+										   class="peer sr-only" />
+
+									<span class="inline-flex px-5 py-2 text-sm font-semibold text-slate-600 bg-white/30 transition peer-checked:bg-slate-800 peer-checked:text-white">
+										No
+									</span>
+								</label>
+							</div>
+						</div>
+
+						<!-- Quantity -->
+						<div>
+							<label class="block text-sm font-semibold text-slate-700 mb-2">
+								Quantity
+							</label>
+
+							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
+								<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
+									<i class="fa-solid fa-arrow-up-9-1"></i>
+								</span>
+
+								<input type="number"
+									   id="spareQuantityTxt"
+									   name="spareQuantity"
+									   min="0"
+									   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
+									   placeholder="Quantity" />
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+
+
+			</div>
+
+
+		</div>
+
+		<div class="border-t border-white/40 bg-white/50 backdrop-blur-xl px-6 py-4">
+			<div class="flex items-center justify-end gap-3">
+				<button type="button" id="cancelSubmitDrawer"
+						class="px-4 py-2 rounded-lg border border-white/50 bg-white/40 text-sm font-semibold text-slate-700 hover:bg-white/70 transition">
+					Cancel
+				</button>
+
+				<button type="submit"
+						class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-semibold shadow-sm hover:bg-slate-700 transition">
+					<i class="fa-solid fa-paper-plane"></i>
+					<span>Submit</span>
+				</button>
+			</div>
+		</div>
+
+	</form>
+
+
+
+
+
+</div>
+
+
+
+<script>
+	window.mainTable = new Tabulator( "#main-table", {
+		layout: "fitDataStretch",
+		responsiveLayout: "collapse",
+		height: "calc(100vh - 210px)",
+		ajaxURL: "/TRRF/GetMainRows",
+
+		columns: [
+			{ title: "ID", field: "id", width: 80 },
+			{ title: "Request Name", field: "name" },
+			{ title: "Status", field: "status" },
+		],
+
+		rowFormatter: function ( row )
+		{
+			var data = row.getData();
+
+			if ( !data.children || data.children.length === 0 ) return;
+
+			var holder = document.createElement( "div" );
+			holder.classList.add( "p-2" );
+			holder.style.background = "rgba(255, 255, 255, 0.22)";
+			holder.style.backdropFilter = "blur(10px)";
+			holder.style.borderTop = "1px solid rgba(255, 255, 255, 0.35)";
+
+			var childTable = document.createElement( "div" );
+			holder.appendChild( childTable );
+
+			row.getElement().appendChild( holder );
+
+			new Tabulator( childTable, {
+				layout: "fitColumns",
+				data: data.children,
+				columns: [
+					{ title: "Task", field: "task" },
+					{ title: "Assigned To", field: "assignedTo" },
+					{ title: "Hours", field: "hours" },
+				]
+			} );
+		}
+	} );
+
+	const openDrawer = document.getElementById( "openSubmitDrawer" );
+	const closeDrawer = document.getElementById( "closeSubmitDrawer" );
+	const drawer = document.getElementById( "submitDrawer" );
+	const overlay = document.getElementById( "submitDrawerOverlay" );
+
+	openDrawer.addEventListener( "click", function ()
+	{
+		overlay.classList.remove( "hidden" );
+		drawer.classList.remove( "translate-x-full" );
+	} );
+
+	function closeSubmitDrawer ()
+	{
+		drawer.classList.add( "translate-x-full" );
+		overlay.classList.add( "hidden" );
+	}
+
+	closeDrawer.addEventListener( "click", closeSubmitDrawer );
+	overlay.addEventListener( "click", closeSubmitDrawer );
+</script>
