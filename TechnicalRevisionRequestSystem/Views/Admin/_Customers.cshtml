@@ -1,0 +1,119 @@
+﻿<div class="glass-card p-6">
+
+	<!-- Header -->
+	<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+		<i class="fa-solid fa-building text-slate-600"></i>
+		<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+			Customer Information
+		</h3>
+	</div>
+
+	<div class="space-y-5">
+
+		<!-- Customer Code -->
+		<div>
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Customer Code
+			</label>
+
+			<input type="text"
+				   id="customerCode"
+				   maxlength="20"
+				   placeholder="Enter customer code..."
+				   class="w-full rounded-xl border border-slate-200 bg-white/70
+                          px-4 py-2.5 text-slate-700
+                          focus:outline-none focus:ring-2 focus:ring-blue-400" />
+		</div>
+
+		<!-- Customer Name -->
+		<div>
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Customer Name
+			</label>
+
+			<input type="text"
+				   id="customerName"
+				   maxlength="100"
+				   placeholder="Enter customer name..."
+				   class="w-full rounded-xl border border-slate-200 bg-white/70
+                          px-4 py-2.5 text-slate-700
+                          focus:outline-none focus:ring-2 focus:ring-blue-400" />
+		</div>
+
+		<!-- Save -->
+		<div class="pt-2 flex justify-end">
+
+			<button type="button"
+					id="btnInsertCustomer"
+					class="inline-flex items-center gap-2
+                           px-5 py-2.5 rounded-xl
+                           bg-slate-800 text-white
+                           hover:bg-slate-700 transition">
+
+				<i class="fa-solid fa-floppy-disk"></i>
+				Save Customer
+
+			</button>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+<script>
+	$( document ).on( "click", "#btnInsertCustomer", function () {
+		console.log( "Save button clicked" );
+
+		const customerCode = $( "#customerCode" ).val().trim();
+		const customerName = $( "#customerName" ).val().trim();
+
+		if ( !customerCode )
+		{
+			alert( "Customer code is required." );
+			return;
+		}
+
+		if ( !customerName )
+		{
+			alert( "Customer name is required." );
+			return;
+		}
+
+		$.ajax( {
+			url: '/Admin/InsertCustomer',   // Change to your controller/action
+			type: 'POST',
+			data: {
+				customerCode: customerCode,
+				customerName: customerName
+			},
+			success: function ( response )
+			{
+
+				if ( response.success )
+				{
+
+					showToast( response.message, "success" );
+
+					// Optional
+					$( "#customerCode" ).val( "" );
+					$( "#customerName" ).val( "" );
+
+					refreshCustomerList();
+					closeAdministrationDrawer();
+
+				} else
+				{
+					showToast( response.message );
+				}
+
+			},
+			error: function ()
+			{
+				showToast( "An error occurred while saving the customer." );
+			}
+		} );
+} );
+	
+</script>

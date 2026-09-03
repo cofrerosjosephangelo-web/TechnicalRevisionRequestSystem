@@ -9,12 +9,16 @@
 	<script src="~/css/tailwind.min.css"></script>
 	<link rel="stylesheet" href="~/font-icons/font-awesome/css/all.css" />
 	<link rel="stylesheet" href="~/TechnicalRevisionRequestSystem.styles.css" asp-append-version="true" />
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/js/sweetalert2@11.js"></script>
+	<script src="~/js/echarts.min.js"></script>
+	<script src="~/js/excel/xlsx.full.min.js"></script>
 
 
 
 
 </head>
-<body class="bg-slate-100">
+<body class="bg-slate-100" style="background: url('/images/trrsbg3.png') no-repeat center center fixed; background-size: cover; ">
 
 	<div class="flex h-screen overflow-hidden">
 
@@ -27,13 +31,12 @@
 					 class="w-50 h-500 object-contain"
 					 alt="TRRS Logo" />
 
-				
+
 			</div>
 
-			<!-- Menu -->
 			<nav class="flex-1 overflow-y-auto p-4 space-y-4">
 
-				<!-- MENU GROUP -->
+				<!-- MAIN MENU -->
 				<div>
 					<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
 						Main Menu
@@ -43,36 +46,50 @@
 
 						<a href="/TRRF/Index"
 						   class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
-
-							<i class="fa fa-table-list"></i> <span class="menu-text">&nbsp;TRRF Tracking</span>
-
+							<i class="fa-solid fa-table-list w-5"></i>
+							<span class="menu-text">TRRF Tracking</span>
 						</a>
-
-				
 
 					</div>
 				</div>
 
-				<!-- MENU GROUP 2 -->
-				@*<div>
-					<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-						Requests
-					</p>
+				<!-- ADMINISTRATION -->
+				@if (Context.Session.GetString("trrsadmin") == "1")
+				{
+					<div>
 
-					<div class="space-y-1">
+						<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+							Administration
+						</p>
 
-						<a href="/Request/Create"
-						    class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
-							<span class="menu-text">Create Request</span>
-						</a>
+						<div class="space-y-1">
 
-						<a href="/Request/List"
-						    class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
-							<span class="menu-text">Request List</span>
-						</a>
+							<!-- Customers -->
+							<a href="/Admin/Customers"
+							   class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
+								<i class="fa-solid fa-building w-5"></i>
+								<span class="menu-text">Customers</span>
+							</a>
+
+							<!-- Products -->
+							<a href="/Admin/Products"
+							   class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
+								<i class="fa-solid fa-box-open w-5"></i>
+								<span class="menu-text">Products</span>
+							</a>
+
+							@* Customer Product Mapping
+					<a href="/Administration/CustomerProducts"
+					   class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-white/60 hover:shadow transition">
+						<i class="fa-solid fa-link w-5"></i>
+						<span class="menu-text">Customer Product Mapping</span>
+					</a>
+							*@
+
+						</div>
 
 					</div>
-				</div>*@
+				}
 
 			</nav>
 
@@ -87,7 +104,7 @@
 
 			<!-- TOP NAV -->
 			<!-- TOP NAV -->
-			<header class="h-16 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-sm flex items-center justify-between px-6">
+			<header class="relative z-40 h-16 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-sm flex items-center justify-between px-6">
 
 				<div class="flex items-center gap-3">
 
@@ -108,8 +125,70 @@
 
 				</div>
 
-				<div class="flex items-center gap-4">
-					<div class="w-9 h-9 rounded-full bg-slate-300"></div>
+				<div class="relative">
+
+					<!-- Profile Button -->
+					<button id="profileMenuBtn"
+							class="relative flex items-center justify-center w-10 h-10 rounded-full bg-slate-300 hover:bg-slate-400 transition">
+
+						<i class="fa-solid fa-user text-slate-700 text-sm"></i>
+
+						<!-- Small Arrow -->
+						<span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow">
+							<i id="profileArrow"
+							   class="fa-solid fa-chevron-down text-[10px] text-slate-600 transition-transform duration-200"></i>
+						</span>
+
+					</button>
+
+					<!-- Dropdown -->
+					<div id="profileDropdown"
+						 class="hidden absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50">
+
+						<!-- User Name -->
+						<div class="px-4 py-4 border-b bg-slate-50">
+							<div class="flex items-center gap-3">
+								<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
+									<i class="fa-solid fa-user text-slate-600"></i>
+								</div>
+
+								<div class="min-w-0">
+									<div class="text-sm font-semibold text-slate-800 truncate">
+										@Context.Session.GetString("FullName")
+									</div>
+									<div class="text-xs text-slate-500">
+										Account
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<a class="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition">
+
+							<i class="fa-solid fa-key w-5 text-slate-600"></i>
+							<span>Change Password</span>
+
+						</a>
+
+						<a class="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition">
+
+							<i class="fa-solid fa-gear w-5 text-slate-600"></i>
+							<span>Settings</span>
+
+						</a>
+
+						<div class="border-t"></div>
+
+						<a href="/Auth/Logout"
+						   class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-red-600">
+
+							<i class="fa-solid fa-right-from-bracket w-5"></i>
+							<span>Logout</span>
+
+						</a>
+
+					</div>
+
 				</div>
 
 			</header>
@@ -123,56 +202,15 @@
 
 	</div>
 
+
+	<div id="toastContainer" class="fixed top-5 right-5 z-[9999] space-y-2"></div>
+
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
 
+
 	@await RenderSectionAsync("Scripts", required: false)
-	<script>
-		document.addEventListener( "DOMContentLoaded", function ()
-		{
-
-			const sidebar = document.getElementById( "sidebar" );
-			const toggle = document.getElementById( "sidebarToggle" );
-
-			if ( !sidebar || !toggle ) return;
-
-			let collapsed = false;
-
-			toggle.addEventListener( "click", function ()
-			{
-				collapsed = !collapsed;
-
-				if ( collapsed )
-				{
-					sidebar.classList.remove( "w-64" );
-					sidebar.classList.add( "w-20" );
-
-					document.querySelectorAll( ".menu-text" ).forEach( el =>
-					{
-						el.style.display = "none";
-					} );
-				} else
-				{
-					sidebar.classList.remove( "w-20" );
-					sidebar.classList.add( "w-64" );
-
-					document.querySelectorAll( ".menu-text" ).forEach( el =>
-					{
-						el.style.display = "inline";
-					} );
-				}
-
-				setTimeout( function ()
-				{
-					if ( window.mainTable )
-					{
-						window.mainTable.redraw( true );
-					}
-				}, 350 );
-			} );
-
-		} );
-	</script>
+	<script src="~/js/layoutmain.js" asp-append-version="true"></script>
 </body>
 
 

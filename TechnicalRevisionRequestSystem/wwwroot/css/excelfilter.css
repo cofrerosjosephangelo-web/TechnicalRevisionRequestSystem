@@ -1,0 +1,93 @@
+﻿.excel-filter-popup {
+	position: fixed;
+	width: 260px;
+	background: white;
+	border-radius: 10px;
+	box-shadow: 0 10px 30px rgba(0,0,0,.25);
+	border: 1px solid #ddd;
+	z-index: 999999;
+	overflow: hidden;
+}
+
+.excel-filter-header {
+	padding: 10px;
+}
+
+.excel-filter-search {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+}
+
+.excel-filter-body {
+	max-height: 250px;
+	overflow: auto;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+
+.excel-item {
+	display: block;
+	padding: 7px 10px;
+	cursor: pointer;
+}
+
+	.excel-item:hover {
+		background: #f5f5f5;
+	}
+
+.excel-filter-footer {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+}
+
+
+.excel-menu-item {
+	display: flex;
+	align-items: center;
+	padding: 10px 14px;
+	cursor: pointer;
+	user-select: none;
+	transition: all .15s ease;
+	border-radius: 4px;
+	margin: 2px 6px;
+}
+
+	.excel-menu-item:hover {
+		background: #e8f0fe;
+	}
+
+.excel-menu-icon {
+	width: 24px;
+	text-align: center;
+	color: #555;
+	flex-shrink: 0;
+}
+
+.excel-menu-text {
+	flex: 1;
+	font-size: 13px;
+	color: #222;
+}
+
+
+.excel-date-section {
+	padding: 10px 12px;
+}
+
+.excel-date-title {
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+
+.excel-date-section input {
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 6px 8px;
+	border: 1px solid #d1d5db;
+	border-radius: 4px;
+	font-size: 13px;
+}
+

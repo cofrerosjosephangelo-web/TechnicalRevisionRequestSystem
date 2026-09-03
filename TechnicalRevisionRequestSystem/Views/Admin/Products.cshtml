@@ -1,0 +1,1038 @@
+﻿@model ProductAdministrationViewModel
+
+
+@{
+	Layout = "_Layout";
+}
+
+<script src="~/css/tailwind.min.css"></script>
+<link rel="stylesheet" href="~/css/index/index.css" />
+
+<div class="glass-card p-6">
+
+	<!-- Header -->
+	<div class="flex items-center justify-between mb-6">
+
+		<div>
+			<h2 class="text-xl font-semibold text-slate-700 flex items-center">
+				<i class="fa-solid fa-box-open mr-2"></i>
+				Product Management
+			</h2>
+
+			<p class="text-sm text-slate-500 mt-1">
+				Maintain product master records used by the TRRS system.
+			</p>
+		</div>
+
+		<div class="flex items-center gap-2">
+
+			<button id="btnAddProduct"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                       bg-slate-800 text-white text-sm font-medium
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       hover:bg-slate-700 transition"
+					data-from="prod">
+
+				<i class="fa-solid fa-plus"></i>
+				Add New Product
+
+			</button>
+
+			<button id="btnDeleteProduct"
+					disabled
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                       bg-red-600 text-white text-sm font-medium
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       hover:bg-red-700 transition">
+
+				<i class="fa-solid fa-trash"></i>
+				Delete Product
+
+			</button>
+
+			<button id="btnRestoreProduct"
+					disabled
+					class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                       bg-emerald-600 text-white text-sm font-medium
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       hover:bg-emerald-700 transition">
+
+				<i class="fa-solid fa-rotate-left"></i>
+				Restore Product
+
+			</button>
+
+		</div>
+
+	</div>
+
+	<!-- Content -->
+
+	<div class="grid grid-cols-12 gap-6">
+
+		<!-- Product List -->
+
+		<div class="col-span-4">
+
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Products
+			</label>
+
+			<div class="relative">
+
+				<input type="text"
+					   id="txtSearchProduct"
+					   placeholder="Search product..."
+					   class="w-full rounded-t-xl border border-slate-300 border-b-0
+                              bg-white/80 backdrop-blur
+                              pl-10 pr-3 py-2 text-sm
+                              focus:ring-2 focus:ring-slate-400
+                              focus:outline-none" />
+
+				<i class="fa-solid fa-magnifying-glass
+                          absolute left-3 top-3 text-slate-400"></i>
+
+				<select id="productList"
+						size="16"
+						class="w-full rounded-b-xl border border-slate-300
+                               bg-white/70 backdrop-blur
+                               p-3 text-sm
+                               focus:ring-2 focus:ring-slate-400
+                               focus:outline-none">
+
+					@foreach (var product in Model.Products)
+					{
+						<option value="@product.productId"
+								data-name="@product.productName"
+								data-gml="@product.gml"
+								data-custid="@product.customerid"
+								data-model="@product.modelpartno"
+								data-deleted="@product.isdeleted">
+
+							@product.productName
+
+						</option>
+					}
+
+				</select>
+
+			</div>
+
+		</div>
+
+		<!-- Details -->
+
+		<div class="col-span-8">
+
+			<div class="grid grid-cols-2 gap-5">
+
+				<!-- Product ID -->
+
+				<div>
+
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Product ID
+					</label>
+
+					<input type="text"
+						   id="txtProductId"
+						   readonly
+						   class="w-full rounded-xl border border-slate-300
+                                  bg-slate-100 text-slate-600
+                                  px-4 py-2
+                                  cursor-not-allowed
+                                  focus:outline-none" />
+
+				</div>
+
+				<!-- GML -->
+
+				<div>
+
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						GML (Guaranteed Mold Life)
+					</label>
+
+					<input type="text"
+						   id="txtProductGML"
+						   readonly
+						   class="w-full rounded-xl border border-slate-300
+                                  bg-white/70 backdrop-blur
+                                  px-4 py-2
+                                  focus:ring-2 focus:ring-slate-400
+                                  focus:outline-none" />
+
+				</div>
+
+				<!-- Product Name -->
+
+				<div class="col-span-2">
+
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Product Name
+					</label>
+
+					<input type="text"
+						   id="txtProductName"
+						   readonly
+						   class="w-full rounded-xl border border-slate-300
+                                  bg-white/70 backdrop-blur
+                                  px-4 py-2
+                                  focus:ring-2 focus:ring-slate-400
+                                  focus:outline-none" />
+
+				</div>
+
+				<div class="col-span-2">
+
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Model / Part No.
+					</label>
+
+					<input type="text"
+						   id="txtProductModel"
+						   readonly
+						   class="w-full rounded-xl border border-slate-300
+                  bg-white/70 backdrop-blur
+                  px-4 py-2
+                  focus:ring-2 focus:ring-slate-400
+                  focus:outline-none" />
+
+				</div>
+
+				<div class="col-span-2 mt-2">
+
+					<label class="inline-flex items-center cursor-pointer">
+
+						<input type="checkbox"
+							   id="chkBindCustomer"
+							   class="sr-only peer" disabled>
+
+						<div class="relative w-11 h-6 bg-slate-300 rounded-full
+                    peer peer-checked:bg-blue-600
+                    after:content-['']
+                    after:absolute
+                    after:top-[2px]
+                    after:left-[2px]
+                    after:bg-white
+                    after:border
+                    after:rounded-full
+                    after:h-5
+                    after:w-5
+                    after:transition-all
+                    peer-checked:after:translate-x-full">
+						</div>
+
+						<span class="ml-3 text-sm font-medium text-slate-700">
+							Bind to Customer
+						</span>
+
+					</label>
+
+				</div>
+
+				<div class="col-span-2">
+
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Customer List
+					</label>
+
+					<select id="ddlProductCustomer"
+							disabled
+							class="w-full rounded-xl border border-slate-300
+                   bg-white/70 backdrop-blur
+                   px-4 py-2
+                   focus:ring-2 focus:ring-slate-400
+                   focus:outline-none
+                 disabled:bg-white/70
+               disabled:text-slate-700
+               disabled:opacity-100
+               disabled:cursor-default">
+
+						@foreach (var customer in Model.Customers)
+						{
+							<option value="@customer.customerId"
+									data-code="@customer.customerCode"
+									data-name="@customer.customersName">
+
+								@customer.customerName
+
+							</option>
+						}
+
+
+						@* Populate by AJAX *@
+
+					</select>
+
+				</div>
+
+			</div>
+
+			<div class="mt-8 flex items-center gap-2">
+
+				<button id="btnEditProduct"
+						style="display:none"
+						class="inline-flex items-center gap-2
+                               px-5 py-2 rounded-lg
+                               bg-amber-500 text-white
+                               hover:bg-amber-600 transition">
+
+					<i class="fa-solid fa-pen-to-square"></i>
+					Edit Product
+
+				</button>
+
+				<button id="btnSaveProduct"
+						style="display:none"
+						class="inline-flex items-center gap-2
+                               px-5 py-2 rounded-lg
+                               bg-blue-600 text-white
+                               hover:bg-blue-700 transition">
+
+					<i class="fa-solid fa-floppy-disk"></i>
+					Save Product
+
+				</button>
+
+				<button id="btnCancelProduct"
+						style="display:none"
+						class="inline-flex items-center gap-2
+                               px-5 py-2 rounded-lg
+                               bg-slate-500 text-white
+                               hover:bg-slate-600 transition">
+
+					<i class="fa-solid fa-xmark"></i>
+					Cancel
+
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+@await Html.PartialAsync("_AdministrationDrawer")
+
+<script>
+
+	$( "#productList" ).change( function ()
+	{
+
+		let option = $( this ).find( ":selected" );
+
+		if ( option.length )
+		{
+
+			$( "#txtProductId" ).val( option.val() );
+			$( "#txtProductName" ).val( option.data( "name" ) );
+			$( "#txtProductGML" ).val( option.data( "gml" ) );
+			$( "#txtProductModel" ).val( option.data( "model" ) );
+
+			// Customer Binding
+			let customerId = option.data( "custid" );
+
+			if ( customerId && customerId != 0 )
+			{
+				$( "#chkBindCustomer" ).prop( "checked", true );
+				$( "#ddlProductCustomer" )
+					.val( customerId );
+			}
+			else
+			{
+				$( "#chkBindCustomer" ).prop( "checked", false );
+				$( "#ddlProductCustomer" )
+					.prop( "disabled", true )
+					.val( "" );
+			}
+
+			$( "#btnDeleteProduct" ).prop( "disabled", false );
+			$( "#btnEditProduct" ).show();
+
+			// Deleted status
+			let isDeleted = Number( option.data( "deleted" ) );
+
+			$( "#btnRestoreProduct" ).attr( "style" );
+			$( "#btnRestoreProduct" ).hasClass( "hidden" );
+
+			if ( isDeleted === 1 )
+			{
+
+				$( "#btnDeleteProduct" ).addClass( "hidden" );
+				$( "#btnRestoreProduct" )
+					.removeClass( "hidden" )
+					.prop( "disabled", false );
+
+			} else
+			{
+
+				$( "#btnRestoreProduct" ).addClass( "hidden" );
+				$( "#btnDeleteProduct" )
+					.removeClass( "hidden" )
+					.prop( "disabled", false );
+
+			}
+
+		} else
+		{
+
+			$( "#txtProductId" ).val( "" );
+			$( "#txtProductName" ).val( "" );
+			$( "#txtProductGML" ).val( "" );
+			$( "#txtProductModel" ).val( "" );
+
+			$( "#chkBindCustomer" ).prop( "checked", false );
+			$( "#ddlProductCustomer" )
+				.prop( "disabled", true )
+				.val( "" );
+
+			$( "#btnDeleteProduct" )
+				.removeClass( "hidden" )
+				.prop( "disabled", true );
+
+			$( "#btnRestoreProduct" )
+				.addClass( "hidden" )
+				.prop( "disabled", true );
+
+			$( "#btnEditProduct" ).hide();
+
+			// Exit edit mode
+			$( "#btnSaveProduct" ).hide();
+			$( "#btnCancelProduct" ).hide();
+
+		}
+
+	} );
+
+
+
+
+
+	$( "#chkBindCustomer" ).on( "change", function ()
+	{
+
+		$( "#ddlProductCustomer" ).prop( "disabled", !this.checked );
+
+		if ( !this.checked )
+		{
+			$( "#ddlProductCustomer" ).val( "" );
+		}
+
+	} );
+
+
+
+
+	const administrationDrawer =
+		document.getElementById( "administrationDrawer" );
+
+	const administrationOverlay =
+		document.getElementById( "administrationOverlay" );
+
+	const closeAdministrationDrawerBtn =
+		document.getElementById( "closeAdministrationDrawer" );
+
+	const cancelAdministrationDrawerBtn =
+		document.getElementById( "cancelAdministrationDrawer" );
+
+
+
+
+	function openAdministrationDrawer ( from )
+	{
+
+		// Hide all sections
+		document.querySelectorAll( "#administrationDrawerBody > div" )
+			.forEach( x => x.classList.add( "hidden" ) );
+
+		switch ( from )
+		{
+
+			case "cust":
+				//document.getElementById( "administrationDrawerTitle" ).innerText =
+				//	"Add New Customer";
+
+				document.getElementById( "customersection" )
+					.classList.remove( "hidden" );
+				break;
+
+			case "prod":
+				document.getElementById( "administrationDrawerTitle" ).innerText =
+					"Add New Product";
+
+				document.getElementById( "productsection" )
+					.classList.remove( "hidden" );
+				break;
+
+			case "custprod":
+				document.getElementById( "administrationDrawerTitle" ).innerText =
+					"Customer Product Mapping";
+
+				document.getElementById( "customerproductsection" )
+					.classList.remove( "hidden" );
+				break;
+		}
+
+		administrationOverlay.classList.remove( "hidden" );
+		administrationDrawer.classList.remove( "translate-x-full" );
+	}
+
+	function closeAdministrationDrawer ()
+	{
+
+		administrationDrawer.classList.add( "translate-x-full" );
+
+		setTimeout( function ()
+		{
+
+			administrationOverlay.classList.add( "hidden" );
+
+		}, 300 );
+	}
+
+
+	document.querySelectorAll( "[data-from]" ).forEach( btn =>
+	{
+
+		btn.addEventListener( "click", function ()
+		{
+
+			openAdministrationDrawer( this.dataset.from );
+
+		} );
+
+	} );
+
+	closeAdministrationDrawerBtn.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+	cancelAdministrationDrawerBtn.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+	administrationOverlay.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+
+
+	function refreshProductList ()
+	{
+
+		$.get( "/TRRF/GetProductLookup", function ( products )
+		{
+
+			const list = $( "#productList" );
+			list.empty();
+
+			$.each( products, function ( _, product )
+			{
+
+				list.append( `
+            <option value="${ product.productId }"
+                    data-name="${ product.productName }"
+                    data-gml="${ product.gml }"
+					data-custid="${ product.customerid }"
+					data-model="${ product.modelpartno }"
+					data-deleted="${ product.isdeleted }">
+                ${ product.productName }
+            </option>
+        `);
+
+			} );
+
+			// Scroll to the last customer and select it
+			const lastOption = list.find( "option:last" );
+
+			if ( lastOption.length )
+			{
+				lastOption.prop( "selected", true );
+				list[ 0 ].scrollTop = list[ 0 ].scrollHeight;
+				list.trigger( "change" );
+			}
+
+		} );
+
+	}
+
+
+
+
+
+	let originalProduct = {};
+
+	$( "#btnEditProduct" ).click( function ()
+	{
+
+		// Save original values
+		originalProduct = {
+			name: $( "#txtProductName" ).val(),
+			gml: $( "#txtProductGML" ).val(),
+			model: $( "#txtProductModel" ).val(),
+			customer: $( "#ddlProductCustomer" ).val(),
+			bind: $( "#chkBindCustomer" ).is( ":checked" )
+		};
+
+		// Disable product selection
+		$( "#productList" ).prop( "disabled", true );
+		$( "#txtSearchProduct" ).prop( "disabled", true );
+		$( "#btnAddProduct" ).prop( "disabled", true );
+		$( "#btnDeleteProduct" ).prop( "disabled", true );
+
+		// Enable editing
+		$( "#txtProductName, #txtProductGML, #txtProductModel" )
+			.prop( "readonly", false )
+			.removeClass( "bg-white/70" )
+			.addClass( "bg-white" );
+
+		$( "#chkBindCustomer" ).prop( "disabled", false );
+
+		if ( $( "#chkBindCustomer" ).is( ":checked" ) )
+		{
+			$( "#ddlProductCustomer" ).prop( "disabled", false );
+		}
+
+		// Toggle buttons
+		$( "#btnEditProduct" ).hide();
+		$( "#btnSaveProduct" ).show();
+		$( "#btnCancelProduct" ).show();
+
+	} );
+
+
+	$( "#btnCancelProduct" ).click( function ()
+	{
+
+		// Restore original values
+		$( "#txtProductName" ).val( originalProduct.name );
+		$( "#txtProductGML" ).val( originalProduct.gml );
+		$( "#txtProductModel" ).val( originalProduct.model );
+
+		$( "#chkBindCustomer" )
+			.prop( "checked", originalProduct.bind )
+			.trigger( "change" );
+
+		$( "#ddlProductCustomer" )
+			.val( originalProduct.customer )
+			.prop( "disabled", !originalProduct.bind );
+
+		// Enable product selection
+		$( "#productList" ).prop( "disabled", false );
+		$( "#txtSearchProduct" ).prop( "disabled", false );
+		$( "#btnAddProduct" ).prop( "disabled", false );
+		$( "#btnDeleteProduct" ).prop( "disabled", false );
+
+		// Disable editing
+		$( "#txtProductName, #txtProductGML, #txtProductModel" )
+			.prop( "readonly", true )
+			.removeClass( "bg-white" )
+			.addClass( "bg-white/70" );
+
+		$( "#chkBindCustomer" ).prop( "disabled", true );
+
+		// Toggle buttons
+		$( "#btnSaveProduct" ).hide();
+		$( "#btnCancelProduct" ).hide();
+		$( "#btnEditProduct" ).show();
+
+	} );
+
+
+
+
+
+	const originalProductOptions = $( "#productList option" ).clone();
+
+	$( "#txtSearchProduct" ).on( "input", function ()
+	{
+
+		const keyword = $( this ).val().toLowerCase().trim();
+		const $productList = $( "#productList" );
+
+		$productList.empty();
+
+		originalProductOptions.each( function ()
+		{
+
+			const productName = ( $( this ).data( "name" ) || "" ).toString().toLowerCase();
+			const modelPartNo = ( $( this ).data( "model" ) || "" ).toString().toLowerCase();
+			const gml = String( $( this ).data( "gml" ) ?? "" );
+
+			if (
+				productName.includes( keyword ) ||
+				modelPartNo.includes( keyword ) ||
+				gml.includes( keyword )
+			)
+			{
+				$productList.append( $( this ).clone() );
+			}
+
+		} );
+
+		// Automatically select the first result
+		if ( $productList.find( "option" ).length > 0 )
+		{
+			$productList.prop( "selectedIndex", 0 ).trigger( "change" );
+		}
+
+	} );
+
+
+
+
+	$( "#btnSaveProduct" ).click( function ()
+	{
+
+		const productId = $( "#txtProductId" ).val().trim();
+		const productName = $( "#txtProductName" ).val().trim();
+		const gml = $( "#txtProductGML" ).val().trim();
+		const modelDescription = $( "#txtProductModel" ).val().trim();
+
+		const isBind = $( "#chkBindCustomer" ).is( ":checked" );
+		const customerId = isBind
+			? ( $( "#ddlProductCustomer" ).val() || null )
+			: null;
+
+		// Validation
+		if ( productName === "" )
+		{
+			Swal.fire( {
+				icon: "warning",
+				title: "Product Name Required",
+				text: "Please enter a product name."
+			} ).then( () =>
+			{
+				$( "#txtProductName" ).focus();
+			} );
+			return;
+		}
+
+		if ( isBind && !customerId )
+		{
+			Swal.fire( {
+				icon: "warning",
+				title: "Customer Required",
+				text: "Please select a customer before saving."
+			} ).then( () =>
+			{
+				$( "#ddlProductCustomer" ).focus();
+			} );
+			return;
+		}
+
+		$.ajax( {
+			url: "/Admin/UpdateProductBind",
+			type: "POST",
+			data: {
+				productId: productId,
+				productName: productName,
+				gml: gml || null,
+				modelDescription: modelDescription || null,
+				customerId: customerId
+			},
+			success: function ( response )
+			{
+
+				if ( response.success )
+				{
+
+					// Update original values
+					originalProduct = {
+						name: productName,
+						gml: gml,
+						model: modelDescription,
+						customer: customerId,
+						bind: isBind
+					};
+
+					// Update listbox
+					$( "#productList option:selected" )
+						.text( productName )
+						.attr( "data-name", productName )
+						.attr( "data-gml", gml )
+						.attr( "data-model", modelDescription );
+
+					Swal.fire( {
+						icon: "success",
+						title: "Success",
+						text: response.message,
+						timer: 1800,
+						showConfirmButton: false
+					} ).then( () =>
+					{
+						// Return to read-only mode
+						$( "#btnCancelProduct" ).trigger( "click" );
+						refreshProductList();
+					} );
+
+					//resetProductEditMode();
+
+
+
+
+				}
+				else
+				{
+					Swal.fire( {
+						icon: "error",
+						title: "Update Failed",
+						text: response.message
+					} );
+				}
+			},
+			error: function ()
+			{
+				Swal.fire( {
+					icon: "error",
+					title: "Server Error",
+					text: "An unexpected error occurred while updating the product."
+				} );
+			}
+		} );
+
+	} );
+
+
+
+
+	function resetProductEditMode ()
+	{
+
+		// Restore original values
+		$( "#txtProductName" ).val( originalProduct.name );
+		$( "#txtProductGML" ).val( originalProduct.gml );
+		$( "#txtProductModel" ).val( originalProduct.model );
+
+		$( "#chkBindCustomer" )
+			.prop( "checked", originalProduct.bind )
+			.trigger( "change" );
+
+		$( "#ddlProductCustomer" )
+			.val( originalProduct.customer )
+			.prop( "disabled", !originalProduct.bind );
+
+		// Enable product selection
+		$( "#productList" ).prop( "disabled", false );
+		$( "#txtSearchProduct" ).prop( "disabled", false );
+		$( "#btnAddProduct" ).prop( "disabled", false );
+		$( "#btnDeleteProduct" ).prop( "disabled", false );
+
+		// Disable editing
+		$( "#txtProductName, #txtProductGML, #txtProductModel" )
+			.prop( "readonly", true )
+			.removeClass( "bg-white" )
+			.addClass( "bg-white/70" );
+
+		$( "#chkBindCustomer" ).prop( "disabled", true );
+
+		// Toggle buttons
+		$( "#btnSaveProduct" ).hide();
+		$( "#btnCancelProduct" ).hide();
+		$( "#btnEditProduct" ).show();
+	}
+
+
+	$( "#btnDeleteProduct" ).click( function ()
+	{
+
+		const productId = $( "#txtProductId" ).val();
+
+		if ( !productId )
+		{
+			Swal.fire( {
+				icon: "warning",
+				title: "No Product Selected",
+				text: "Please select a product to delete."
+			} );
+			return;
+		}
+
+		Swal.fire( {
+			title: "Are you sure?",
+			text: "Are you sure you want to delete this product?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#6b7280",
+			confirmButtonText: "Yes, Delete",
+			cancelButtonText: "No"
+		} ).then( ( result ) =>
+		{
+
+			if ( !result.isConfirmed )
+				return;
+
+			$.ajax( {
+				url: "/Admin/DeleteProduct",
+				type: "POST",
+				data: {
+					productId: productId
+				},
+				success: function ( response )
+				{
+
+					if ( response.success )
+					{
+
+						Swal.fire( {
+							icon: "success",
+							title: "Deleted",
+							text: response.message,
+							timer: 1800,
+							showConfirmButton: false
+						} ).then( () =>
+						{
+
+							// Remove deleted product from list
+							/*$( "#productList option:selected" ).remove();*/
+							refreshProductList();
+
+							// Clear form
+							$( "#txtProductId" ).val( "" );
+							$( "#txtProductName" ).val( "" );
+							$( "#txtProductGML" ).val( "" );
+							$( "#txtProductModel" ).val( "" );
+
+							$( "#chkBindCustomer" )
+								.prop( "checked", false )
+								.trigger( "change" );
+
+							$( "#ddlProductCustomer" ).val( "" );
+
+							// Disable buttons until another product is selected
+							$( "#btnEditProduct" ).hide();
+							$( "#btnDeleteProduct" ).prop( "disabled", true );
+
+
+
+						} );
+					}
+					else
+					{
+						Swal.fire( {
+							icon: "error",
+							title: "Delete Failed",
+							text: response.message
+						} );
+					}
+				},
+				error: function ()
+				{
+					Swal.fire( {
+						icon: "error",
+						title: "Server Error",
+						text: "An unexpected error occurred while deleting the product."
+					} );
+				}
+			} );
+
+		} );
+
+	} );
+
+
+	$( "#btnRestoreProduct" ).click( function ()
+	{
+
+		const productId = $( "#txtProductId" ).val();
+
+		if ( !productId )
+		{
+			Swal.fire( {
+				icon: "warning",
+				title: "No Product Selected",
+				text: "Please select a product to restore."
+			} );
+			return;
+		}
+
+		Swal.fire( {
+			title: "Are you sure?",
+			text: "Are you sure you want to restore this product?",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonColor: "#059669",
+			cancelButtonColor: "#6b7280",
+			confirmButtonText: "Yes, Restore",
+			cancelButtonText: "No"
+		} ).then( ( result ) =>
+		{
+
+			if ( !result.isConfirmed )
+				return;
+
+			$.ajax( {
+				url: "/Admin/RestoreProduct",
+				type: "POST",
+				data: {
+					productId: productId
+				},
+				success: function ( response )
+				{
+
+					if ( response.success )
+					{
+
+						Swal.fire( {
+							icon: "success",
+							title: "Restored",
+							text: response.message,
+							timer: 1800,
+							showConfirmButton: false
+						} ).then( () =>
+						{
+
+							// Refresh product list
+							refreshProductList();
+
+							// Clear form
+							$( "#txtProductId" ).val( "" );
+							$( "#txtProductName" ).val( "" );
+							$( "#txtProductGML" ).val( "" );
+							$( "#txtProductModel" ).val( "" );
+
+							$( "#chkBindCustomer" )
+								.prop( "checked", false )
+								.trigger( "change" );
+
+							$( "#ddlProductCustomer" ).val( "" );
+
+							// Disable buttons until another product is selected
+							$( "#btnEditProduct" ).hide();
+							$( "#btnDeleteProduct" ).prop( "disabled", true );
+							//$( "#btnRestoreProduct" )
+							//	.hide()
+							//	.prop( "disabled", true );
+
+						} );
+					}
+					else
+					{
+						Swal.fire( {
+							icon: "error",
+							title: "Restore Failed",
+							text: response.message
+						} );
+					}
+				},
+				error: function ()
+				{
+					Swal.fire( {
+						icon: "error",
+						title: "Server Error",
+						text: "An unexpected error occurred while restoring the product."
+					} );
+				}
+			} );
+
+		} );
+
+	} );
+</script>

@@ -1,0 +1,42 @@
+﻿<div class="glass-card p-6">
+
+	<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+		<i class="fa-solid fa-flask-vial text-slate-600"></i>
+		<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+			Mold Result Information
+		</h3>
+	</div>
+
+	<div class="space-y-5">
+
+		<!-- Date Accomplished Result -->
+		<div>
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Date Accomplished Result
+			</label>
+
+			<input type="date"
+				   id="dateAccomplishedResult"
+				   value="@DateTime.Today.ToString("yyyy-MM-dd")"
+				   class="w-full rounded-xl border border-slate-200 bg-white/70
+                          px-4 py-2.5 text-slate-700
+                          focus:outline-none focus:ring-2 focus:ring-blue-400">
+		</div>
+
+		<!-- Mold Result -->
+		<div>
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Mold Result
+			</label>
+
+			<textarea id="moldResult"
+					  rows="6"
+					  placeholder="Enter mold result..."
+					  class="w-full rounded-xl border border-slate-200 bg-white/70
+                             px-4 py-3 text-slate-700 resize-none
+                             focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+		</div>
+
+	</div>
+
+</div>

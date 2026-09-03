@@ -58,6 +58,7 @@ namespace TechnicalRevisionRequestSystem.Services
 
 							email = reader["email"].ToString(),
 							notifdownload = Convert.ToInt32(reader["notifdownload"]),
+							trrsadmin = Convert.ToInt32(reader["trrsadmin"]),
 
 							userid = reader["id"].ToString()
 						};

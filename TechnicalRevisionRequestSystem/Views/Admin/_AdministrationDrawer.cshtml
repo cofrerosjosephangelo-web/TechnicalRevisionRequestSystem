@@ -1,0 +1,74 @@
+﻿<div id="administrationOverlay"
+	 class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden z-40">
+</div>
+
+<div id="administrationDrawer"
+	 class="fixed top-0 right-0 h-full w-full max-w-2xl
+            bg-white/60 backdrop-blur-xl
+            border-l border-white/40
+            shadow-2xl
+            translate-x-full
+            transition-transform duration-300
+            z-50
+            flex flex-col">
+
+	<!-- Header -->
+	<div class="h-16 px-6 flex items-center justify-between
+                border-b border-white/40">
+
+		<h2 id="administrationDrawerTitle"
+			class="text-lg font-semibold text-slate-700">
+
+			Administration
+
+		</h2>
+
+		<button id="closeAdministrationDrawer"
+				class="p-2 rounded-lg hover:bg-white/60 transition">
+
+			✕
+
+		</button>
+
+	</div>
+
+	<!-- Dynamic Body -->
+	<div id="administrationDrawerBody"
+		 class="flex-1 overflow-y-auto p-6 space-y-5">
+
+		<div id="customersection" class="hidden">
+			@await Html.PartialAsync("_Customers")
+		</div>
+
+		<div id="productsection" class="hidden">
+			@await Html.PartialAsync("_Products")
+		</div>
+
+
+
+	</div>
+
+	<!-- Footer -->
+	<div class="h-16 border-t border-white/40
+                bg-white/40 backdrop-blur-md
+                flex items-center justify-end gap-3 px-6">
+
+		<button id="cancelAdministrationDrawer"
+				class="px-4 py-2 rounded-xl border border-slate-300">
+
+			Cancel
+
+		</button>
+
+		@*<button id="saveAdministrationDrawer"
+				class="px-4 py-2 rounded-xl
+                       bg-slate-800 text-white">
+
+			Save
+
+		</button>*@
+
+	</div>
+
+</div>
+

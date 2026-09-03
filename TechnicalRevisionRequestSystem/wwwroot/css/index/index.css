@@ -1,0 +1,243 @@
+﻿.glass-card {
+	position: relative;
+	background: rgba(255, 255, 255, 0.35);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	border-radius: 16px;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+	color: #1f2937;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tabulator-glass {
+	padding: 14px;
+	overflow: hidden;
+}
+
+/* Main Tabulator container */
+.tabulator {
+	background: transparent !important;
+	border: none !important;
+	color: #1f2937;
+	font-size: 14px;
+}
+
+	/* Header area */
+	.tabulator .tabulator-header {
+		background: linear-gradient( 180deg, #475569 0%, #334155 100% ) !important;
+	}
+
+
+
+		/* Header cells */
+		.tabulator .tabulator-header .tabulator-col:not(.tabulator-frozen) {
+			background: transparent !important;
+			border-right: 1px solid rgba(255,255,255,.35) !important;
+		}
+
+		.tabulator .tabulator-header .tabulator-col.tabulator-frozen {
+			background: #334155 !important;
+			z-index: 50 !important;
+		}
+		/* Header text */
+		.tabulator .tabulator-header .tabulator-col-title {
+			color: white !important;
+			font-weight: 600;
+		}
+
+	/* Rows */
+	.tabulator .tabulator-row {
+		background: rgba(255, 255, 255, 0.25) !important;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
+		color: #1f2937;
+	}
+
+		/* Alternating rows */
+		.tabulator .tabulator-row:nth-child(even) {
+			background: rgba(255, 255, 255, 0.16) !important;
+		}
+
+		/* Hover row */
+		.tabulator .tabulator-row:hover {
+			background: rgba(255, 255, 255, 0.5) !important;
+		}
+
+		/* Selected row */
+		.tabulator .tabulator-row.tabulator-selected {
+			background: rgba(59, 130, 246, 0.18) !important;
+		}
+
+	/* Cells */
+	.tabulator .tabulator-cell {
+		border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+	}
+
+	/* Footer / pagination if used */
+	.tabulator .tabulator-footer {
+		background: rgba(255, 255, 255, 0.35) !important;
+		border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+	}
+
+	/* Scrollbar */
+	.tabulator .tabulator-tableholder::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+
+	.tabulator .tabulator-tableholder::-webkit-scrollbar-thumb {
+		background: rgba(100, 116, 139, 0.35);
+		border-radius: 999px;
+	}
+
+	.tabulator .tabulator-tableholder::-webkit-scrollbar-track {
+		background: rgba(255, 255, 255, 0.15);
+	}
+
+	.tabulator .tabulator-header .tabulator-header-filter input[type="search"],
+	.tabulator .tabulator-header .tabulator-header-filter input[type="text"],
+	.tabulator .tabulator-header .tabulator-header-filter select {
+		background-color: #f2f2f2 !important;
+		border: 1px solid #d0d0d0;
+		border-radius: 4px;
+		padding: 4px;
+	}
+
+	.tabulator .tabulator-col,
+	.tabulator .tabulator-cell {
+		border-right: 1px solid #f2f2f2;
+	}
+
+		.tabulator .tabulator-col:last-child,
+		.tabulator .tabulator-cell:last-child {
+			border-right: none;
+		}
+
+
+.done-yes {
+	color: #16a34a; /* green */
+	font-weight: bold;
+}
+.done-dev {
+	color: #0000ff; /* blue */
+	font-weight: bold;
+}
+
+.done-no {
+	color: #9ca3af; /* gray */
+}
+
+.child-row-muted {
+	opacity: .45;
+	filter: grayscale(100%);
+	pointer-events: none;
+	background: #f5f5f5 !important;
+}
+
+	.child-row-muted .tabulator-cell {
+		color: #9ca3af !important;
+	}
+
+
+/* Smooth transition */
+.tabulator-row.child-row-approved,
+.tabulator-row.child-row-pending {
+	transition: background-color 0.15s ease;
+}
+
+	/* Approved = light matte green */
+	.tabulator-row.child-row-approved:hover {
+		background-color: #eef8f0 !important;
+	}
+
+	/* Not approved = super light matte gray */
+	.tabulator-row.child-row-pending:hover {
+		background-color: #f8f8f8 !important;
+	}
+
+
+/* Odd */
+.tabulator .tabulator-row {
+	background: #ffffff !important;
+	transition: background-color .15s ease;
+}
+
+	/* Even */
+	.tabulator .tabulator-row:nth-child(even) {
+		background: #f8fafc !important;
+	}
+
+	/* Hover */
+	.tabulator .tabulator-row:hover {
+		background: #e2e8f0 !important;
+	}
+
+	/* Selected */
+	.tabulator .tabulator-row.tabulator-selected {
+		background: #bfdbfe !important;
+	}
+
+.tabulator-header-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+	.tabulator-header-title .filter-icon {
+		margin-left: 8px;
+		flex-shrink: 0;
+	}
+
+@keyframes bellRing {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	10% {
+		transform: rotate(20deg);
+	}
+
+	20% {
+		transform: rotate(-20deg);
+	}
+
+	30% {
+		transform: rotate(15deg);
+	}
+
+	40% {
+		transform: rotate(-15deg);
+	}
+
+	50% {
+		transform: rotate(10deg);
+	}
+
+	60% {
+		transform: rotate(-10deg);
+	}
+
+	70% {
+		transform: rotate(5deg);
+	}
+
+	80% {
+		transform: rotate(-5deg);
+	}
+
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+#myApprovalsBell.bell-ringing {
+	animation: bellRing 1s ease-in-out infinite;
+	transform-origin: 50% 0%;
+	display: inline-block;
+}
+
+.tabulator-cell[tabulator-field="problem"] {
+	white-space: normal !important;
+	word-break: break-word;
+}

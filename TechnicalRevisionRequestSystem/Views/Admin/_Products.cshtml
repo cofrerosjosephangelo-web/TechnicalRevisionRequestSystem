@@ -1,0 +1,321 @@
+﻿@model ProductAdministrationViewModel
+
+<div class="glass-card p-6">
+
+	<!-- Header -->
+	<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
+		<i class="fa-solid fa-box text-slate-600"></i>
+		<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
+			Product Information
+		</h3>
+	</div>
+
+	<div class="space-y-5">
+
+		<div class="grid grid-cols-2 gap-5">
+
+			<!-- Product Name -->
+			<div class="col-span-2">
+
+				<label class="block text-sm font-semibold text-slate-700 mb-2">
+					Product Name
+				</label>
+
+				<input type="text"
+					   id="productName"
+					   maxlength="255"
+					   placeholder="Enter product name..."
+					   class="w-full rounded-xl border border-slate-200 bg-white/70
+                              px-4 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+			</div>
+
+			<!-- Model / Part No -->
+			<div>
+
+				<label class="block text-sm font-semibold text-slate-700 mb-2">
+					Model / Part No.
+				</label>
+
+				<input type="text"
+					   id="modelDescription"
+					   maxlength="350"
+					   placeholder="Enter model or part number..."
+					   class="w-full rounded-xl border border-slate-200 bg-white/70
+                              px-4 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+			</div>
+
+			<!-- GML -->
+			<div>
+
+				<label class="block text-sm font-semibold text-slate-700 mb-2">
+					Guaranteed Mold Life (GML)
+				</label>
+
+				<input type="number"
+					   id="productGML"
+					   min="0"
+					   placeholder="Enter GML..."
+					   class="w-full rounded-xl border border-slate-200 bg-white/70
+                              px-4 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+			</div>
+
+			<!-- Bind Customer -->
+			<div class="col-span-2">
+
+				<label class="inline-flex items-center cursor-pointer">
+
+					<input type="checkbox"
+						   id="chkBindCustomerAdd"
+						   class="sr-only peer">
+
+					<div class="relative w-11 h-6 bg-slate-300 rounded-full
+                                peer peer-checked:bg-blue-600
+                                after:content-['']
+                                after:absolute
+                                after:top-[2px]
+                                after:left-[2px]
+                                after:h-5
+                                after:w-5
+                                after:bg-white
+                                after:border
+                                after:rounded-full
+                                after:transition-all
+                                peer-checked:after:translate-x-full">
+					</div>
+
+					<span class="ml-3 text-sm font-semibold text-slate-700">
+						Bind Product to Customer
+					</span>
+
+				</label>
+
+			</div>
+
+			<!-- Customer -->
+			<div class="col-span-2">
+
+				<label class="block text-sm font-semibold text-slate-700 mb-2">
+					Customer
+				</label>
+
+				<select id="ddlProductCustomerAdd"
+						disabled
+						class="w-full rounded-xl border border-slate-200
+                               bg-white/70
+                               px-4 py-2.5
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-400
+                               disabled:bg-slate-100
+                               disabled:text-slate-400
+                               disabled:cursor-not-allowed">
+
+					<option value="">-- Select Customer --</option>
+
+					@foreach (var customer in Model.Customers)
+					{
+						<option value="@customer.customerId">
+							@customer.customerName
+						</option>
+					}
+
+				</select>
+
+			</div>
+
+		</div>
+
+		<!-- Save -->
+		<div class="pt-2 flex justify-end">
+
+			<button type="button"
+					id="btnInsertProduct"
+					class="inline-flex items-center gap-2
+                           px-5 py-2.5 rounded-xl
+                           bg-slate-800 text-white
+                           hover:bg-slate-700 transition">
+
+				<i class="fa-solid fa-floppy-disk"></i>
+				Save Product
+
+			</button>
+
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+	$( "#chkBindCustomerAdd" ).on( "change", function ()
+	{
+
+		$( "#ddlProductCustomerAdd" ).prop( "disabled", !this.checked );
+
+		if ( !this.checked )
+		{
+			$( "#ddlProductCustomerAdd" ).val( "" );
+		}
+
+	} );
+
+
+
+	$( function ()
+	{
+
+
+
+		//==========================================
+		// Insert Product
+		//==========================================
+
+		$( "#btnInsertProduct" ).on( "click", function ()
+		{
+
+			const productName = $( "#productName" ).val().trim();
+			const modelDescription = $( "#modelDescription" ).val().trim();
+			const gml = $( "#productGML" ).val().trim();
+
+			const bindCustomer = $( "#chkBindCustomerAdd" ).is( ":checked" );
+			const customerId = bindCustomer
+				? $( "#ddlProductCustomerAdd" ).val()
+				: null;
+
+			//--------------------------------------
+			// Validation
+			//--------------------------------------
+
+			if ( productName === "" )
+			{
+				Swal.fire( {
+					icon: "warning",
+					title: "Validation",
+					text: "Product Name is required."
+				} );
+
+				$( "#productName" ).focus();
+				return;
+			}
+
+			if ( bindCustomer && !customerId )
+			{
+				Swal.fire( {
+					icon: "warning",
+					title: "Validation",
+					text: "Please select a customer."
+				} );
+
+				$( "#ddlProductCustomerAdd" ).focus();
+				return;
+			}
+
+			//--------------------------------------
+			// Disable button while saving
+			//--------------------------------------
+
+			$( "#btnInsertProduct" )
+				.prop( "disabled", true )
+				.html( '<i class="fa-solid fa-spinner fa-spin"></i> Saving...' );
+
+			//--------------------------------------
+			// AJAX
+			//--------------------------------------
+
+			$.ajax( {
+				url: "/Admin/InsertProduct",
+				type: "POST",
+				data: {
+					productName: productName,
+					gml: gml,
+					modelDescription: modelDescription,
+					customerId: customerId
+				},
+
+				success: function ( response )
+				{
+
+					if ( response.success )
+					{
+
+						Swal.fire( {
+							icon: "success",
+							title: "Success",
+							text: response.message
+						} );
+
+						clearProductForm();
+						refreshProductList();
+						closeAdministrationDrawer();
+
+						// Reload Product List if you already have one
+						// loadProducts();
+
+					}
+					else
+					{
+
+						Swal.fire( {
+							icon: "error",
+							title: "Unable to Save",
+							text: response.message
+						} );
+
+
+
+					}
+
+				},
+
+				error: function ()
+				{
+
+					Swal.fire( {
+						icon: "error",
+						title: "Server Error",
+						text: "An unexpected error occurred."
+					} );
+
+				},
+
+				complete: function ()
+				{
+
+					$( "#btnInsertProduct" )
+						.prop( "disabled", false )
+						.html( '<i class="fa-solid fa-floppy-disk"></i> Save Product' );
+
+				}
+
+			} );
+
+		} );
+
+
+		//==========================================
+		// Clear Form
+		//==========================================
+
+		function clearProductForm ()
+		{
+
+			$( "#productName" ).val( "" );
+			$( "#modelDescription" ).val( "" );
+			$( "#productGML" ).val( "" );
+
+			$( "#chkBindCustomerAdd" )
+				.prop( "checked", false )
+				.trigger( "change" );
+
+			$( "#productName" ).focus();
+
+		}
+
+	} );
+</script>

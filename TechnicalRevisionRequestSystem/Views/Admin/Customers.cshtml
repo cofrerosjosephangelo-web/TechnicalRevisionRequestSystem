@@ -1,0 +1,552 @@
+﻿@model ProductAdministrationViewModel
+
+@{
+	Layout = "_Layout";
+}
+
+<script src="~/css/tailwind.min.css"></script>
+<link rel="stylesheet" href="~/css/index/index.css" />
+<div class="glass-card p-6">
+
+	<!-- Header -->
+	<div class="flex items-center justify-between mb-6">
+
+		<div>
+			<h2 class="text-xl font-semibold text-slate-700 flex items-center">
+				<i class="fa-solid fa-building mr-2"></i>
+				Customer Management
+			</h2>
+
+			<p class="text-sm text-slate-500 mt-1">
+				Maintain customer master records used by the TRRS system.
+			</p>
+		</div>
+
+		<div class="flex items-center gap-2">
+
+			<button id="btnAddCustomer"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                           bg-slate-800 text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed
+                           hover:bg-slate-700 transition" data-from="cust">
+
+				<i class="fa-solid fa-plus"></i>
+				Add New Customer
+
+			</button>
+
+			<button id="btnDeleteCustomer"
+					disabled
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+               bg-red-600 text-white text-sm font-medium
+               disabled:opacity-50 disabled:cursor-not-allowed
+               hover:bg-red-700 transition">
+
+				<i class="fa-solid fa-trash"></i>
+				Delete Customer
+
+			</button>
+
+		</div>
+
+	</div>
+
+	<!-- Content -->
+
+	<div class="grid grid-cols-12 gap-6">
+
+		<!-- Customer List -->
+
+		<div class="col-span-4">
+
+			<label class="block text-sm font-semibold text-slate-700 mb-2">
+				Customers
+			</label>
+
+			<select id="customerList"
+					size="18"
+					class="w-full rounded-xl border border-slate-300 bg-white/70
+                           backdrop-blur p-3 text-sm
+                           focus:ring-2 focus:ring-slate-400
+                           focus:outline-none">
+
+				@foreach (var customer in Model.Customers)
+				{
+					<option value="@customer.customerId"
+							data-code="@customer.customerCode"
+							data-name="@customer.customersName">
+
+						@customer.customerName
+
+					</option>
+				}
+
+
+				<!-- Loaded by AJAX -->
+
+			</select>
+
+		</div>
+
+		<!-- Details -->
+
+		<div class="col-span-8">
+
+			<div class="grid grid-cols-2 gap-5">
+
+				<!-- Customer ID -->
+				<div>
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Customer ID
+					</label>
+
+					<input type="text"
+						   id="txtCustomerId"
+						   readonly
+						   class="w-full rounded-xl border border-slate-300
+                          bg-slate-100/80 text-slate-600
+                          backdrop-blur px-4 py-2
+                          cursor-not-allowed
+                          focus:outline-none" />
+				</div>
+
+				<!-- Customer Code -->
+				<div>
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Customer Code
+					</label>
+
+					<input type="text"
+						   id="txtCustomerCode"
+						   class="w-full rounded-xl border border-slate-300
+                          bg-white/70 backdrop-blur
+                          px-4 py-2
+                          focus:ring-2 focus:ring-slate-400
+                          focus:outline-none" readonly />
+				</div>
+
+				<!-- Customer Name -->
+				<div class="col-span-2">
+					<label class="block text-sm font-semibold text-slate-700 mb-2">
+						Customer Name
+					</label>
+
+					<input type="text"
+						   id="txtCustomerName"
+						   class="w-full rounded-xl border border-slate-300
+                          bg-white/70 backdrop-blur
+                          px-4 py-2
+                          focus:ring-2 focus:ring-slate-400
+                          focus:outline-none" readonly />
+				</div>
+
+			</div>
+
+			<div class="mt-8 flex items-center gap-2">
+
+				<button id="btnEditCustomer"
+						style="display:none"
+						class="inline-flex items-center gap-2
+               px-5 py-2 rounded-lg
+               bg-amber-500 text-white
+               hover:bg-amber-600 transition">
+
+					<i class="fa-solid fa-pen-to-square"></i>
+					Edit Customer
+
+				</button>
+
+				<button id="btnSaveCustomer"
+						style="display:none"
+						class="inline-flex items-center gap-2
+                   px-5 py-2 rounded-lg
+                   bg-blue-600 text-white
+                   hover:bg-blue-700 transition">
+
+					<i class="fa-solid fa-floppy-disk"></i>
+					Save Customer
+
+				</button>
+
+				<button id="btnCancelCustomer"
+						style="display:none"
+						class="inline-flex items-center gap-2
+                   px-5 py-2 rounded-lg
+                   bg-slate-500 text-white
+                   hover:bg-slate-600 transition">
+
+					<i class="fa-solid fa-xmark"></i>
+					Cancel
+
+				</button>
+
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+@await Html.PartialAsync("_AdministrationDrawer")
+
+
+<script>
+	$( "#customerList" ).change( function ()
+	{
+
+		let option = $( this ).find( ":selected" );
+
+		if ( option.length )
+		{
+
+			$( "#txtCustomerId" ).val( option.val() );
+			$( "#txtCustomerCode" ).val( option.data( "code" ) );
+			$( "#txtCustomerName" ).val( option.data( "name" ) );
+
+			$( "#btnDeleteCustomer" ).prop( "disabled", false );
+			$( "#btnEditCustomer" ).show();
+
+		} else
+		{
+
+			$( "#txtCustomerId" ).val( "" );
+			$( "#txtCustomerCode" ).val( "" );
+			$( "#txtCustomerName" ).val( "" );
+
+			$( "#btnDeleteCustomer" ).prop( "disabled", true );
+			$( "#btnEditCustomer" ).hide();
+
+			// Make sure edit mode is exited
+			$( "#btnSaveCustomer" ).hide();
+			$( "#btnCancelCustomer" ).hide();
+
+		}
+
+	} );
+
+
+</script>
+
+<script>
+	const administrationDrawer =
+		document.getElementById( "administrationDrawer" );
+
+	const administrationOverlay =
+		document.getElementById( "administrationOverlay" );
+
+	const closeAdministrationDrawerBtn =
+		document.getElementById( "closeAdministrationDrawer" );
+
+	const cancelAdministrationDrawerBtn =
+		document.getElementById( "cancelAdministrationDrawer" );
+
+
+
+
+	function openAdministrationDrawer ( from )
+	{
+
+		// Hide all sections
+		document.querySelectorAll( "#administrationDrawerBody > div" )
+			.forEach( x => x.classList.add( "hidden" ) );
+
+		switch ( from )
+		{
+
+			case "cust":
+				//document.getElementById( "administrationDrawerTitle" ).innerText =
+				//	"Add New Customer";
+
+				document.getElementById( "customersection" )
+					.classList.remove( "hidden" );
+				break;
+
+			case "prod":
+				document.getElementById( "administrationDrawerTitle" ).innerText =
+					"Add New Product";
+
+				document.getElementById( "productsection" )
+					.classList.remove( "hidden" );
+				break;
+
+			case "custprod":
+				document.getElementById( "administrationDrawerTitle" ).innerText =
+					"Customer Product Mapping";
+
+				document.getElementById( "customerproductsection" )
+					.classList.remove( "hidden" );
+				break;
+		}
+
+		administrationOverlay.classList.remove( "hidden" );
+		administrationDrawer.classList.remove( "translate-x-full" );
+	}
+
+	function closeAdministrationDrawer ()
+	{
+
+		administrationDrawer.classList.add( "translate-x-full" );
+
+		setTimeout( function ()
+		{
+
+			administrationOverlay.classList.add( "hidden" );
+
+		}, 300 );
+	}
+
+
+	document.querySelectorAll( "[data-from]" ).forEach( btn =>
+	{
+
+		btn.addEventListener( "click", function ()
+		{
+
+			openAdministrationDrawer( this.dataset.from );
+
+		} );
+
+	} );
+
+	closeAdministrationDrawerBtn.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+	cancelAdministrationDrawerBtn.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+	administrationOverlay.addEventListener(
+		"click",
+		closeAdministrationDrawer
+	);
+
+
+
+	function refreshCustomerList ()
+	{
+
+		$.get( "/TRRF/GetCustomerLookup", function ( customers )
+		{
+
+			const list = $( "#customerList" );
+			list.empty();
+
+			$.each( customers, function ( _, customer )
+			{
+
+				list.append( `
+                <option value="${ customer.customerId }"
+                        data-code="${ customer.customerCode }"
+                        data-name="${ customer.customersName }">
+                    ${ customer.customerName }
+                </option>
+            `);
+
+			} );
+
+			// Scroll to the last customer and select it
+			const lastOption = list.find( "option:last" );
+
+			if ( lastOption.length )
+			{
+				lastOption.prop( "selected", true );
+				list[ 0 ].scrollTop = list[ 0 ].scrollHeight;
+				list.trigger( "change" );
+			}
+
+		} );
+
+	}
+
+
+	$( "#btnDeleteCustomer" ).on( "click", function ()
+	{
+
+		const customerId = $( "#customerList" ).val();
+
+		if ( !customerId )
+		{
+			showToast( "Please select a customer first.", "warning" );
+			return;
+		}
+
+		if ( !confirm( "Are you sure you want to delete this customer?" ) )
+		{
+			return;
+		}
+
+		$.ajax( {
+			url: "/Admin/DeleteCustomer",
+			type: "POST",
+			data: {
+				customerId: customerId
+			},
+			success: function ( response )
+			{
+
+				if ( response.success )
+				{
+
+					showToast( response.message, "success" );
+
+					refreshCustomerList();
+
+					// Clear the textboxes
+					$( "#customerCode" ).val( "" );
+					$( "#customerName" ).val( "" );
+
+					// Disable delete until another customer is selected
+					$( "#btnDeleteCustomer" ).prop( "disabled", true );
+
+				} else
+				{
+
+					showToast( response.message, "error" );
+
+				}
+
+			},
+			error: function ()
+			{
+
+				showToast( "An error occurred while deleting the customer.", "error" );
+
+			}
+		} );
+
+	} );
+
+
+	let originalCustomer = {};
+
+	$( "#btnEditCustomer" ).click( function ()
+	{
+
+		// Save original values
+		originalCustomer = {
+			code: $( "#txtCustomerCode" ).val(),
+			name: $( "#txtCustomerName" ).val()
+		};
+
+		// Disable customer selection
+		$( "#customerList" ).prop( "disabled", true );
+		$( "#btnDeleteCustomer" ).prop( "disabled", true );
+		$( "#btnAddCustomer" ).prop( "disabled", true );
+
+		// Enable editing
+		$( "#txtCustomerCode, #txtCustomerName" )
+			.prop( "readonly", false )
+			.removeClass( "bg-white/70" )
+			.addClass( "bg-white" );
+
+		// Toggle buttons
+		$( "#btnEditCustomer" ).hide();
+		$( "#btnSaveCustomer" ).show();
+		$( "#btnCancelCustomer" ).show();
+
+	} );
+
+	$( "#btnCancelCustomer" ).click( function ()
+	{
+
+		// Restore original values
+		$( "#txtCustomerCode" ).val( originalCustomer.code );
+		$( "#txtCustomerName" ).val( originalCustomer.name );
+
+		// Enable customer selection again
+		$( "#customerList" ).prop( "disabled", false );
+		$( "#btnDeleteCustomer" ).prop( "disabled", false );
+		$( "#btnAddCustomer" ).prop( "disabled", false );
+
+		// Disable editing
+		$( "#txtCustomerCode, #txtCustomerName" )
+			.prop( "readonly", true )
+			.removeClass( "bg-white" )
+			.addClass( "bg-white/70" );
+
+		// Toggle buttons
+		$( "#btnSaveCustomer" ).hide();
+		$( "#btnCancelCustomer" ).hide();
+		$( "#btnEditCustomer" ).show();
+
+	} );
+
+
+	$( "#btnSaveCustomer" ).on( "click", function ()
+	{
+
+		const customerId = $( "#txtCustomerId" ).val();
+		const customerCode = $( "#txtCustomerCode" ).val().trim();
+		const customerName = $( "#txtCustomerName" ).val().trim();
+
+		console.log( "Save clicked" );
+
+		if ( !customerCode )
+		{
+			showToast( "Customer code is required.", "warning" );
+			return;
+		}
+
+		if ( !customerName )
+		{
+			showToast( "Customer name is required.", "warning" );
+			return;
+		}
+
+		$.ajax( {
+			url: "/Admin/UpdateCustomer",
+			type: "POST",
+			data: {
+				customerId: customerId,
+				customerCode: customerCode,
+				customerName: customerName
+			},
+			success: function ( response )
+			{
+
+				if ( response.success )
+				{
+
+					showToast( response.message, "success" );
+
+					// Reload the customer list
+					refreshCustomerList();
+
+					// Return to normal mode
+
+					$( "#customerList" ).prop( "disabled", false );
+					$( "#btnDeleteCustomer" ).prop( "disabled", false );
+					$( "#btnAddCustomer" ).prop( "disabled", false );
+
+					// Disable editing
+					$( "#txtCustomerCode, #txtCustomerName" )
+						.prop( "readonly", true )
+						.removeClass( "bg-white" )
+						.addClass( "bg-white/70" );
+
+					$( "#btnCancelCustomer" ).hide();
+					$( "#btnSaveCustomer" ).hide();
+					$( "#btnEditCustomer" ).show();
+
+				} else
+				{
+
+					showToast( response.message, "error" );
+
+				}
+
+			},
+			error: function ()
+			{
+
+				showToast( "An error occurred while updating the customer.", "error" );
+
+			}
+		} );
+
+	} );
+</script>

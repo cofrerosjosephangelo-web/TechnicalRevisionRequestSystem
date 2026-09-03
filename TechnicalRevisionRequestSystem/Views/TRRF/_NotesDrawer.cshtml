@@ -1,0 +1,101 @@
+﻿<!-- Notes Drawer -->
+<div id="notesDrawer"
+	 class="fixed inset-0 z-[9999] invisible">
+
+	<!-- Backdrop -->
+	<div id="notesDrawerBackdrop"
+		 class="absolute inset-0 bg-black/30 opacity-0 transition-opacity duration-300">
+	</div>
+
+	<!-- Drawer -->
+	<div id="notesDrawerPanel"
+		 class="absolute top-0 right-0 h-full w-[450px] max-w-[90vw]
+                bg-white shadow-2xl
+                translate-x-full transition-transform duration-300 ease-in-out">
+
+		<!-- Header -->
+		<div class="flex items-center justify-between
+                    px-5 py-4 border-b border-slate-200">
+
+			<div>
+				<h2 class="text-lg font-semibold text-slate-800">
+					<i class="fa-solid fa-note-sticky text-blue-600 mr-2"></i>
+					Add Notes
+				</h2>
+
+				<p id="notesDrawerSubtitle"
+				   class="text-xs text-slate-500 mt-1">
+					Add a note to this approval
+				</p>
+			</div>
+
+			<button type="button"
+					id="closeNotesDrawer"
+					class="w-8 h-8 flex items-center justify-center
+                           rounded-full text-slate-500
+                           hover:bg-slate-100 hover:text-slate-700 transition">
+
+				<i class="fa-solid fa-xmark text-lg"></i>
+
+			</button>
+
+		</div>
+
+		<!-- Content -->
+		<div class="p-5">
+
+			<div class="mb-4">
+
+				<label class="block text-sm font-medium text-slate-700 mb-2">
+					Notes
+				</label>
+
+				<textarea id="approvalNotes"
+						  rows="12"
+						  maxlength="2000"
+						  placeholder="Enter your notes here..."
+						  class="w-full resize-none rounded-lg border border-slate-300
+                                 px-3 py-3 text-sm text-slate-700
+                                 focus:outline-none focus:ring-2
+                                 focus:ring-blue-500 focus:border-blue-500"></textarea>
+
+				<div class="flex justify-end mt-1">
+					<span id="notesCharacterCount"
+						  class="text-xs text-slate-400">
+						0 / 2000
+					</span>
+				</div>
+
+			</div>
+
+		</div>
+
+		<!-- Footer -->
+		<div class="absolute bottom-0 left-0 right-0
+                    flex items-center justify-end gap-2
+                    px-5 py-4 border-t border-slate-200 bg-white">
+
+			<button type="button"
+					id="cancelNotes"
+					class="px-4 py-2 rounded-lg border border-slate-300
+                           text-sm text-slate-600
+                           hover:bg-slate-100 transition">
+				Cancel
+			</button>
+
+			<button type="button"
+					id="saveApprovalNotes"
+					class="inline-flex items-center gap-2
+                           px-4 py-2 rounded-lg
+                           bg-blue-600 text-white text-sm
+                           hover:bg-blue-700 transition">
+
+				<i class="fa-solid fa-floppy-disk"></i>
+				Save Notes
+
+			</button>
+
+		</div>
+
+	</div>
+</div>

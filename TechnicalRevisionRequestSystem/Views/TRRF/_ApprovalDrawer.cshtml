@@ -1,0 +1,280 @@
+﻿<div id="approvalOverlay"
+	 class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden z-40">
+</div>
+
+<!-- LEFT DRAWER -->
+<div id="leftApprovalDrawer"
+	 class="fixed top-0 left-0 h-full w-full max-w-4xl
+            bg-white/60 backdrop-blur-xl
+            border-r border-white/40
+            shadow-2xl z-50
+            overflow-visible
+            -translate-x-full
+            transition-transform duration-300">
+
+	<!-- Header -->
+	<div class="h-16 px-6 flex items-center justify-between border-b border-white/40">
+
+		<h2 class="text-lg font-semibold text-slate-700">
+			<i class="fa-solid fa-file-lines me-2"></i>
+			TRRF Information
+		</h2>
+
+	</div>
+
+	<!-- Body -->
+	<div class="relative h-[calc(100vh-64px)] overflow-y-auto p-6 space-y-4"
+		 id="leftDrawerBody">
+
+		@await Html.PartialAsync("Product_Info_Problem_Details_Partial")
+
+		<div id="revisionHistoryContainer"
+			 class="space-y-6 mb-6">
+		</div>
+
+		@await Html.PartialAsync("View_Product_Status_Partial")
+
+		@await Html.PartialAsync("View_Actual_Info")
+
+		@await Html.PartialAsync("View_Production_Schedule")
+
+		@await Html.PartialAsync("View_Product_Result")
+
+		<div class="relative my-8">
+
+			<div class="absolute inset-0 flex items-center">
+				<div class="w-full border-t border-slate-300/60"></div>
+			</div>
+
+			<div class="relative flex justify-center">
+				<span class="px-4 bg-white/60 backdrop-blur-md
+                             text-slate-500 text-sm font-semibold
+                             rounded-full border border-white/40
+                             shadow-sm">
+
+					<i class="fa-solid fa-angles-down me-2"></i>
+					Approvals
+					<i class="fa-solid fa-angles-down ms-2"></i>
+
+				</span>
+			</div>
+
+		</div>
+
+		<div id="approvalHistoryContainer"
+			 class="space-y-6 mb-6">
+		</div>
+
+	</div>
+
+
+	<!-- ================================================= -->
+	<!-- APPROVAL QUICK NAV — OUTSIDE DRAWER BODY -->
+	<!-- ================================================= -->
+
+	<div id="approvalQuickNav"
+		 class="absolute
+            top-[45%]
+            left-full
+            ml-10
+            -translate-y-1/2
+            w-56
+            hidden
+            opacity-30
+            hover:opacity-100
+            transition-opacity duration-300
+            z-50">
+
+		<div class="bg-white/80
+                    backdrop-blur-xl
+                    border border-white/30
+                    rounded-2xl
+                    shadow-xl
+                    p-3">
+
+			<div class="flex items-center gap-2
+                        px-2 pb-2 mb-2
+                        border-b border-white/30">
+
+				<i class="fa-solid fa-list-check text-slate-500"></i>
+
+				<span class="text-[11px]
+                             uppercase
+                             tracking-[0.2em]
+                             text-slate-500
+                             font-semibold">
+					Approvals
+				</span>
+
+			</div>
+
+			<div id="approvalQuickNavItems"
+				 class="space-y-1">
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<!-- RIGHT DRAWER -->
+<div id="rightApprovalDrawer"
+	 class="fixed top-0 right-0 h-full w-full max-w-2xl
+            bg-white/60 backdrop-blur-xl
+            border-l border-white/40
+            shadow-2xl z-50
+            translate-x-full
+            transition-transform duration-300
+            flex flex-col">
+
+	<!-- Header -->
+	<div class="h-16 px-6 flex items-center justify-between
+                border-b border-white/40 flex-shrink-0">
+
+		<h2 class="text-lg font-semibold text-slate-700">
+			<i class="fa-solid fa-user-check me-2"></i>
+			Approval
+		</h2>
+
+		<button id="closeApprovalDrawer"
+				class="p-2 rounded-lg hover:bg-white/60 transition">
+			✕
+		</button>
+
+	</div>
+
+	<!-- Body -->
+	<div class="flex-1 overflow-y-auto p-6 space-y-4">
+
+		@{
+			var fullName = Context.Session.GetString("FullName");
+		}
+
+		@await Html.PartialAsync("_ApproverDefaultPartial", fullName)
+		<div id="productStatusSection" class="hidden">
+			@await Html.PartialAsync("Product_Status_Partial")
+		</div>
+
+		<div id="actualinfodesign" class="hidden">
+			@await Html.PartialAsync("Actual_Info_Design")
+		</div>
+
+		<div id="actualinfomodified" class="hidden">
+			@await Html.PartialAsync("Actual_Info_Modified")
+		</div>
+
+		<div id="actualinforesult" class="hidden">
+			@await Html.PartialAsync("Actual_Info_Result")
+		</div>
+
+		<div id="productionschedulepanel" class="hidden">
+			@await Html.PartialAsync("Production_Schedule")
+		</div>
+
+		<div id="productresult" class="hidden">
+			@await Html.PartialAsync("Product_Result")
+		</div>
+
+		<div id="withdeviation" class="hidden">
+			@await Html.PartialAsync("Deviation")
+		</div>
+
+	</div>
+
+	<!-- Footer -->
+	<div class="h-16 px-6 flex items-center justify-end gap-3
+                border-t border-white/40
+                bg-white/40 backdrop-blur-md
+                flex-shrink-0">
+
+		<button id="cancelApprovalDrawer"
+				class="px-4 py-2 rounded-xl
+                       border border-slate-300
+                       text-slate-700
+                       hover:bg-slate-100 transition">
+			Cancel
+		</button>
+
+		<button id="rejectApprovalBtn"
+				class="px-4 py-2 rounded-xl
+                       bg-red-500 text-white
+                       hover:bg-red-800 transition">
+			Reject
+		</button>
+
+		<button id="approveRequestBtn"
+				class="px-4 py-2 rounded-xl
+                       bg-emerald-800 text-white
+                       hover:bg-emerald-700 transition">
+			Approve
+		</button>
+
+	</div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- ATTACHMENT OVERLAY -->
+<!-- ===================================================== -->
+
+<div id="attachmentSheetOverlay"
+	 class="fixed inset-0
+            bg-black/20
+            backdrop-blur-sm
+            hidden
+            z-[60]">
+</div>
+
+<!-- ===================================================== -->
+<!-- ATTACHMENT SHEET -->
+<!-- ===================================================== -->
+
+<div id="attachmentSheet"
+	 class="fixed
+            bottom-6
+            left-1/2
+            -translate-x-1/2
+            w-[95%]
+            max-w-3xl
+            bg-white/70
+            backdrop-blur-xl
+            border border-white/40
+            rounded-2xl
+            shadow-2xl
+            hidden
+            z-[70]">
+
+	<!-- Header -->
+	<div class="flex items-center justify-between
+                p-4
+                border-b border-white/40">
+
+		<h3 class="font-semibold text-slate-700">
+			<i class="fa fa-paperclip me-2"></i>
+			Attachments
+		</h3>
+
+		<button id="btnCloseAttachmentSheet"
+				class="p-2 rounded-lg hover:bg-white/50 transition">
+			✕
+		</button>
+
+	</div>
+
+	<!-- Attachment List -->
+	<div id="attachmentList"
+		 class="max-h-96 overflow-y-auto p-4 space-y-2">
+
+		<!-- Example Item -->
+		<!--
+		
+		-->
+
+	</div>
+
+</div>
+
+<script src="~/js/index/Approve/approve.js" asp-append-version="true"></script>
+<script src="~/js/index/Approve/approvehistory.js" asp-append-version="true"></script>
+<script src="~/js/index/Attachments/attachments.js" asp-append-version="true"></script>

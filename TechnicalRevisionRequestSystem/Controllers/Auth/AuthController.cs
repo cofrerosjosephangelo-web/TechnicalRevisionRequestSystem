@@ -31,6 +31,9 @@ namespace TechnicalRevisionRequestSystem.Controllers.Auth
 				HttpContext.Session.SetString("FullName", user.FullName);
 				HttpContext.Session.SetString("DeptID", user.DeptId.ToString());
 				HttpContext.Session.SetString("SectionID", user.SectionId.ToString());
+				HttpContext.Session.SetString("trrsadmin", user.trrsadmin.ToString());
+				HttpContext.Session.SetString("usersuniqueid", user.userid.ToString());
+
 
 				// redirect to TRRF page (for now Index)
 				return RedirectToAction("Index", "TRRF");

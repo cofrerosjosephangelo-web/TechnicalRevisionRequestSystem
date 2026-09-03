@@ -19,6 +19,7 @@
 
 		public string email { get; set; }
 		public int notifdownload { get; set; }
+		public int trrsadmin { get; set; }
 
 		public string userid { get; set; }
 	}
@@ -28,4 +29,5 @@
 		public string Username { get; set; }
 		public string Password { get; set; }
 	}
+
 }

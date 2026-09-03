@@ -4,715 +4,699 @@
 
 
 
-<script src="~/js/tailwind.min.css"></script>
+<script src="~/css/tailwind.min.css"></script>
 <link href="~/js/tabulator.min.css" rel="stylesheet">
 <script src="~/js/tabulator.min.js" asp-append-version="true"></script>
 
-<style>
-	.glass-card {
-		position: relative;
-		background: rgba(255, 255, 255, 0.35);
-		backdrop-filter: blur(14px);
-		-webkit-backdrop-filter: blur(14px);
-		border: 1px solid rgba(255, 255, 255, 0.4);
-		border-radius: 16px;
-		box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-		color: #1f2937;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-	}
+<link rel="stylesheet" href="~/css/index/index.css" />
 
-	.tabulator-glass {
-		padding: 14px;
-		overflow: hidden;
-	}
+<link href="~/css/excelfilter.css" rel="stylesheet">
 
-	/* Main Tabulator container */
-	.tabulator {
-		background: transparent !important;
-		border: none !important;
-		color: #1f2937;
-		font-size: 14px;
-	}
-
-		/* Header area */
-		.tabulator .tabulator-header {
-			background: rgba(255, 255, 255, 0.45) !important;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.45) !important;
-			color: #334155;
-			font-weight: 700;
-		}
-
-			/* Header cells */
-			.tabulator .tabulator-header .tabulator-col {
-				background: transparent !important;
-				border-right: 1px solid rgba(255, 255, 255, 0.35) !important;
-			}
-
-			/* Header text */
-			.tabulator .tabulator-header .tabulator-col-title {
-				color: #1f2937;
-			}
-
-		/* Rows */
-		.tabulator .tabulator-row {
-			background: rgba(255, 255, 255, 0.25) !important;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
-			color: #1f2937;
-		}
-
-			/* Alternating rows */
-			.tabulator .tabulator-row:nth-child(even) {
-				background: rgba(255, 255, 255, 0.16) !important;
-			}
-
-			/* Hover row */
-			.tabulator .tabulator-row:hover {
-				background: rgba(255, 255, 255, 0.5) !important;
-			}
-
-			/* Selected row */
-			.tabulator .tabulator-row.tabulator-selected {
-				background: rgba(59, 130, 246, 0.18) !important;
-			}
-
-		/* Cells */
-		.tabulator .tabulator-cell {
-			border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
-		}
-
-		/* Footer / pagination if used */
-		.tabulator .tabulator-footer {
-			background: rgba(255, 255, 255, 0.35) !important;
-			border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
-		}
-
-		/* Scrollbar */
-		.tabulator .tabulator-tableholder::-webkit-scrollbar {
-			width: 10px;
-			height: 10px;
-		}
-
-		.tabulator .tabulator-tableholder::-webkit-scrollbar-thumb {
-			background: rgba(100, 116, 139, 0.35);
-			border-radius: 999px;
-		}
-
-		.tabulator .tabulator-tableholder::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.15);
-		}
-</style>
+<script src="~/js/excelfilter.js" asp-append-version="true"></script>
 
 
 <div class="glass-card tabulator-glass">
 
 	<div class="flex items-center justify-between mb-4">
-		<h2 class="text-lg font-semibold text-slate-700">
-			TRRS Tracking
-		</h2>
 
-		<div class="flex items-center gap-2">
+		<!-- Left -->
+		<div class="flex items-center gap-4">
+			<h2 class="text-lg font-semibold text-slate-700 flex items-center">
+				<i class="fa fa-list-check mr-2"></i>
+				TRRS Tracking
+			</h2>
+
+			<label class="inline-flex items-center cursor-pointer select-none">
+
+				<!-- Switch -->
+				<input type="checkbox"
+					   id="myApprovalsOnly"
+					   class="sr-only peer">
+
+				<div class="relative w-11 h-6 rounded-full bg-slate-300 transition-all
+                peer-checked:bg-blue-600
+                after:absolute after:top-[2px] after:left-[2px]
+                after:h-5 after:w-5 after:rounded-full
+                after:bg-white after:transition-all
+                after:content-['']
+                peer-checked:after:translate-x-5">
+				</div>
+
+				<!-- Text + Notification -->
+				<div class="relative ml-3 pr-5">
+
+					<span class="text-sm text-slate-600 whitespace-nowrap">
+						Show my approvals only
+					</span>
+
+					<!-- Notification Bell -->
+					<button type="button"
+							id="myApprovalsNotification"
+							class="absolute -top-3 -right-1
+                       flex items-center justify-center
+                       w-6 h-6
+                       rounded-full
+                       hover:bg-yellow-50 transition">
+
+						<i id="myApprovalsBell"
+						   class="fa-solid fa-bell text-yellow-500 text-lg"></i>
+
+						<!-- Count -->
+						<span id="myApprovalsCount"
+							  class="hidden absolute -top-2 -right-2
+                         min-w-[17px] h-[17px] px-1
+                         rounded-full bg-red-600 text-white
+                         text-[9px] font-bold
+                         flex items-center justify-center
+                         border-2 border-white">
+						</span>
+
+					</button>
+
+				</div>
+
+			</label>
+		</div>
+
+		<!-- Right -->
+		<div class="flex items-center">
+
+			<button type="button"
+					id="btnAskMe"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition mr-2"
+					title="Ask Me">
+				<i class="fa-solid fa-robot me-1"></i>
+				Ask Me
+			</button>
+
+			<!-- Dashboard -->
+			<button type="button"
+					id="dashboardBtn"
+					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">
+				<i class="fa-solid fa-chart-column"></i>
+				<span>Dashboard</span>
+			</button>
+
+			<!-- Divider -->
+			<div class="mx-3 h-7 w-px bg-slate-300"></div>
+
+			<!-- Submit -->
 			<button type="button"
 					id="openSubmitDrawer"
 					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">
-				<span>+</span>
+				<i class="fa-solid fa-plus"></i>
 				<span>Submit New</span>
 			</button>
 
+			<!-- Excel -->
 			<button type="button"
-					id="exportExcelBtn"
-					class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 text-white text-sm font-medium border border-white/40 hover:bg-black/70 transition">
-				<i class="fa fa-file-excel"></i>
+					id="btnExportExcel"
+					class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 text-white text-sm font-medium border border-white/40 hover:bg-black/70 transition">
+				<i class="fa-solid fa-file-excel"></i>
 				<span>Export Excel Report</span>
 			</button>
+
 		</div>
+
 	</div>
 
-	<div id="main-table" class="w-full"></div>
+	<div id="trrs-table" class="w-full"></div>
 
 </div>
 
-<div id="submitDrawerOverlay"
-	 class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden z-40"></div>
 
-<div id="submitDrawer"
-	 class="fixed top-0 right-0 h-full w-full max-w-4xl bg-white/60 backdrop-blur-xl border-l border-white/40 shadow-2xl z-50 translate-x-full transition-transform duration-300">
+<div id="excelExportOverlay"
+	 class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99999] hidden flex items-center justify-center">
 
-	<div class="h-16 px-6 flex items-center justify-between border-b border-white/40">
-		<h2 class="text-lg font-semibold text-slate-700"><b>+</b>&nbsp;Submit New TRRF</h2>
+	<div class="text-center">
 
-		<button type="button"
-				id="closeSubmitDrawer"
-				class="p-2 rounded-lg hover:bg-white/60 transition">
-			✕
-		</button>
+		<div class="w-36 h-36 mx-auto rounded-full bg-white shadow-2xl flex items-center justify-center">
+
+			<i class="fa-solid fa-file-excel text-green-600 text-8xl animate-pulse"></i>
+
+		</div>
+
+		<h2 class="mt-8 text-3xl font-bold text-white tracking-wide">
+			Exporting Excel Report
+		</h2>
+
+		<p class="mt-2 text-white/80 text-lg">
+			Please wait while we generate your report...
+		</p>
+
 	</div>
-
-	
-	<form class="flex h-[calc(100vh-64px)] flex-col">
-		<div class="flex-1 overflow-y-auto p-6">
-			<!-- your fields here -->
-			<div class="glass-card p-4">
-
-				<div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mt-2">
-
-					<!-- Date Prepared -->
-					<div class="w-full lg:w-64">
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Date Prepared
-						</label>
-
-						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-calendar-days"></i>
-							</span>
-
-							<input type="date"
-								   id="datePreparedTxt"
-								   name="datePrepared"
-								   class="w-full min-w-0 px-3 py-1.5 text-sm text-slate-700 bg-white/30 outline-none" />
-						</div>
-					</div>
-
-					<!-- Right Side: MP / PD + TRRF no. -->
-					<div class="flex flex-col sm:flex-row sm:items-end sm:justify-end gap-3">
-
-						<!-- MP / PD Switches -->
-						<div id="TrrfSwitchdiv" class="flex items-center gap-4 h-9">
-
-							<!-- MP -->
-							<label for="mpSwitch"
-								   class="flex items-center gap-2 cursor-pointer select-none">
-								<input type="checkbox"
-									   id="mpSwitch"
-									   value="MP"
-									   class="peer sr-only switch-group" />
-
-								<span class="relative w-11 h-6 rounded-full bg-slate-300 transition
-                                 peer-checked:bg-slate-800
-                                 after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                                 after:w-5 after:h-5 after:rounded-full after:bg-white
-                                 after:shadow after:transition
-                                 peer-checked:after:translate-x-5">
-								</span>
-
-								<span class="text-sm font-medium text-slate-700">MP</span>
-							</label>
-
-							<!-- PD -->
-							<label for="pdSwitch"
-								   class="flex items-center gap-2 cursor-pointer select-none">
-								<input type="checkbox"
-									   id="pdSwitch"
-									   value="PD"
-									   class="peer sr-only switch-group" />
-
-								<span class="relative w-11 h-6 rounded-full bg-slate-300 transition
-                                 peer-checked:bg-slate-800
-                                 after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                                 after:w-5 after:h-5 after:rounded-full after:bg-white
-                                 after:shadow after:transition
-                                 peer-checked:after:translate-x-5">
-								</span>
-
-								<span class="text-sm font-medium text-slate-700">PD</span>
-							</label>
-
-						</div>
-
-						<!-- TRRF Number Input Group -->
-						<div>
-							<label class="block text-sm font-semibold text-slate-700 mb-2 sm:invisible">
-								TRRF #
-							</label>
-
-							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-								<span class="inline-flex min-w-36 items-center px-3 text-sm font-medium text-slate-600 bg-white/60 border-r border-white/40">
-									<i class="fa-solid fa-hashtag"></i>
-									<span class="ml-2">TRRF no.</span>
-								</span>
-
-								<input type="text"
-									   id="trrfNoTxt"
-									   readonly
-									   class="w-36 px-3 py-1.5 text-sm text-slate-700 bg-white/30 outline-none cursor-not-allowed" />
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-
-			</div>
-
-			<div class="glass-card p-4 mt-4">
-
-				<!-- Card Header -->
-				<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
-					<i class="fa-solid fa-box-open text-slate-600"></i>
-
-					<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
-						Product Information
-					</h3>
-				</div>
-
-
-				<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
-
-					<!-- Customer Name -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Customer Name
-						</label>
-
-						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-user"></i>
-							</span>
-
-							<input type="text"
-								   id="customerNameTxt"
-								   name="customerName"
-								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-								   placeholder="Customer name" />
-						</div>
-					</div>
-
-					<!-- Product Name -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Product Name
-						</label>
-
-						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-box"></i>
-							</span>
-
-							<input type="text"
-								   id="productNameTxt"
-								   name="productName"
-								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-								   placeholder="Product name" />
-						</div>
-					</div>
-
-					<!-- Mold # -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Mold #
-						</label>
-
-						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-hashtag"></i>
-							</span>
-
-							<input type="number"
-								   id="moldNoTxt"
-								   name="moldNo"
-								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-								   placeholder="Mold #" />
-						</div>
-					</div>
-
-					<!-- Part / Model # -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Part / Model #
-						</label>
-
-						<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-							<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-cube"></i>
-							</span>
-
-							<input type="text"
-								   id="partModelNoTxt"
-								   name="partModelNo"
-								   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-								   placeholder="Part / Model #" />
-						</div>
-					</div>
-
-				</div>
-
-			</div>
-
-			<!-- Third Row: Problem Details -->
-			<div class="glass-card p-4 mt-4">
-
-				<!-- Card Header -->
-				<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
-					<i class="fa-solid fa-triangle-exclamation text-slate-600"></i>
-
-					<h3 class="text-sm font-bold uppercase tracking-wide text-slate-700">
-						Problem Details
-					</h3>
-				</div>
-
-				<!-- First Part -->
-				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-					<!-- Encountered Problem -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Encountered Problem
-						</label>
-
-						<div class="flex rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md overflow-hidden">
-							<span class="inline-flex items-start px-3 py-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-circle-exclamation"></i>
-							</span>
-
-							<textarea id="encounteredProblemTxt"
-									  name="encounteredProblem"
-									  rows="5"
-									  class="w-full min-w-0 resize-none px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-									  placeholder="Describe the encountered problem"></textarea>
-						</div>
-					</div>
-
-					<!-- Machine Name -->
-					<div>
-						<label class="block text-sm font-semibold text-slate-700 mb-2">
-							Machine Name
-						</label>
-
-						<div class="flex rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md overflow-hidden">
-							<span class="inline-flex items-start px-3 py-3 text-slate-500 bg-white/60 border-r border-white/40">
-								<i class="fa-solid fa-industry"></i>
-							</span>
-
-							<textarea id="machineNameTxt"
-									  name="machineName"
-									  rows="5"
-									  class="w-full min-w-0 resize-none px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-									  placeholder="Machine name / details"></textarea>
-						</div>
-					</div>
-
-				</div>
-
-				<!-- Second Part: Root Cause + Proposed Action Plan -->
-				<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-
-					<!-- Root Cause -->
-					<div class="rounded-xl border border-white/40 bg-white/25 p-4">
-
-						<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
-							<i class="fa-solid fa-magnifying-glass-chart text-slate-600"></i>
-							<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
-								Root Cause
-							</h4>
-						</div>
-
-						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-gears text-slate-500 w-5"></i>
-								<input type="checkbox" id="wearTearSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Wear &amp; Tear</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-screwdriver-wrench text-slate-500 w-5"></i>
-								<input type="checkbox" id="machineErrorSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Machine Error</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-clock-rotate-left text-slate-500 w-5"></i>
-								<input type="checkbox" id="prevImpvtSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Effect of Prev. Impvt</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-pen-ruler text-slate-500 w-5"></i>
-								<input type="checkbox" id="designErrorSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Design Error</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-hammer text-slate-500 w-5"></i>
-								<input type="checkbox" id="fabricationErrorSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Fabrication Error</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-user-check text-slate-500 w-5"></i>
-								<input type="checkbox" id="customerReqSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Customer Req't</span>
-							</label>
-
-						</div>
-
-						<div class="mt-4">
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								Details
-							</label>
-
-							<textarea id="rootCauseDetailsTxt"
-									  rows="5"
-									  class="w-full resize-none rounded-lg border border-white/40 bg-white/40 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
-									  placeholder="Root cause details"></textarea>
-						</div>
-
-						<div class="mt-4">
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								<i class="fa-solid fa-paperclip mr-1"></i>
-								Attachment
-							</label>
-
-							<input type="file"
-								   id="rootCauseAttachment"
-								   class="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700" />
-						</div>
-
-					</div>
-
-					<!-- Proposed Action Plan -->
-					<div class="rounded-xl border border-white/40 bg-white/25 p-4">
-
-						<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
-							<i class="fa-solid fa-list-check text-slate-600"></i>
-							<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
-								Proposed Action Plan
-							</h4>
-						</div>
-
-						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-wrench text-slate-500 w-5"></i>
-								<input type="checkbox" id="repairSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Repair</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-sliders text-slate-500 w-5"></i>
-								<input type="checkbox" id="adjustmentSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Adjustment</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-pen-to-square text-slate-500 w-5"></i>
-								<input type="checkbox" id="revisionSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Revision</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-repeat text-slate-500 w-5"></i>
-								<input type="checkbox" id="replacementSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Replacement</span>
-							</label>
-
-							<label class="flex items-center gap-2 cursor-pointer select-none">
-								<i class="fa-solid fa-flask-vial text-slate-500 w-5"></i>
-								<input type="checkbox" id="trialTestingSwitch" class="peer sr-only" />
-								<span class="relative w-10 h-5 rounded-full bg-slate-300 transition peer-checked:bg-slate-800 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5"></span>
-								<span class="text-sm font-medium text-slate-700">Trial / Testing</span>
-							</label>
-
-							<div class="hidden sm:block min-h-[60px]"></div>
-
-						</div>
-
-						<div class="mt-4">
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								Details
-							</label>
-
-							<textarea id="actionPlanDetailsTxt"
-									  rows="5"
-									  class="w-full resize-none rounded-lg border border-white/40 bg-white/40 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
-									  placeholder="Proposed action plan details"></textarea>
-						</div>
-
-						<div class="mt-4">
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								<i class="fa-solid fa-paperclip mr-1"></i>
-								Attachment
-							</label>
-
-							<input type="file"
-								   id="actionPlanAttachment"
-								   class="block w-full text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700" />
-						</div>
-
-					</div>
-
-				</div>
-
-				<!-- Third Part: Containment -->
-				<div class="rounded-xl border border-white/40 bg-white/25 p-4 mt-4">
-
-					<div class="flex items-center gap-2 pb-3 mb-4 border-b border-white/40">
-						<i class="fa-solid fa-boxes-stacked text-slate-600"></i>
-
-						<h4 class="text-sm font-bold uppercase tracking-wide text-slate-700">
-							Containment of Consumables, Parts / Components and Accessories
-						</h4>
-					</div>
-
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-						<!-- Spare Yes / No -->
-						<div>
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								<i class="fa-solid fa-circle-question mr-1"></i>
-								Does it have Spare?
-							</label>
-
-							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md w-fit">
-								<label class="cursor-pointer">
-									<input type="radio"
-										   name="hasSpare"
-										   value="Yes"
-										   class="peer sr-only" />
-
-									<span class="inline-flex px-5 py-2 text-sm font-semibold text-slate-600 bg-white/30 transition peer-checked:bg-slate-800 peer-checked:text-white">
-										Yes
-									</span>
-								</label>
-
-								<label class="cursor-pointer border-l border-white/40">
-									<input type="radio"
-										   name="hasSpare"
-										   value="No"
-										   class="peer sr-only" />
-
-									<span class="inline-flex px-5 py-2 text-sm font-semibold text-slate-600 bg-white/30 transition peer-checked:bg-slate-800 peer-checked:text-white">
-										No
-									</span>
-								</label>
-							</div>
-						</div>
-
-						<!-- Quantity -->
-						<div>
-							<label class="block text-sm font-semibold text-slate-700 mb-2">
-								Quantity
-							</label>
-
-							<div class="flex overflow-hidden rounded-lg border border-white/40 bg-white/50 shadow-sm backdrop-blur-md">
-								<span class="inline-flex items-center px-3 text-slate-500 bg-white/60 border-r border-white/40">
-									<i class="fa-solid fa-arrow-up-9-1"></i>
-								</span>
-
-								<input type="number"
-									   id="spareQuantityTxt"
-									   name="spareQuantity"
-									   min="0"
-									   class="w-full min-w-0 px-3 py-2 text-sm text-slate-700 bg-white/30 outline-none placeholder:text-slate-400"
-									   placeholder="Quantity" />
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-
-
-
-			</div>
-
-
-		</div>
-
-		<div class="border-t border-white/40 bg-white/50 backdrop-blur-xl px-6 py-4">
-			<div class="flex items-center justify-end gap-3">
-				<button type="button" id="cancelSubmitDrawer"
-						class="px-4 py-2 rounded-lg border border-white/50 bg-white/40 text-sm font-semibold text-slate-700 hover:bg-white/70 transition">
-					Cancel
-				</button>
-
-				<button type="submit"
-						class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-semibold shadow-sm hover:bg-slate-700 transition">
-					<i class="fa-solid fa-paper-plane"></i>
-					<span>Submit</span>
-				</button>
-			</div>
-		</div>
-
-	</form>
-
-
-
-
 
 </div>
 
+
+<script src="~/js/index/Product/product.js" asp-append-version="true"></script>
+
+@await Html.PartialAsync("_ViewNotesDrawer")
+@await Html.PartialAsync("_NotesDrawer")
+@await Html.PartialAsync("_AIDrawer")
+@await Html.PartialAsync("_SubmitDrawer")
+@await Html.PartialAsync("_ApprovalDrawer")
+@await Html.PartialAsync("_Dashboard")
+
+<script>
+	   const userDeptId = parseInt('@(Context.Session.GetString("DeptID") ?? "0")');
+	const userSectionId = parseInt( '@(Context.Session.GetString("SectionID") ?? "0")' );
+
+</script>
+
+<script src="~/js/index/tabulator/tabulator.js" asp-append-version="true"></script>
+
+
+
+@section Scripts {
+	<script src="~/js/index/SubmitDrawer/submit.js" asp-append-version="true"></script>
+	<script src="~/js/index/Dashboard/Dashboard.js" asp-append-version="true"></script>
+
+}
 
 
 <script>
-	window.mainTable = new Tabulator( "#main-table", {
-		layout: "fitDataStretch",
-		responsiveLayout: "collapse",
-		height: "calc(100vh - 210px)",
-		ajaxURL: "/TRRF/GetMainRows",
 
-		columns: [
-			{ title: "ID", field: "id", width: 80 },
-			{ title: "Request Name", field: "name" },
-			{ title: "Status", field: "status" },
-		],
-
-		rowFormatter: function ( row )
-		{
-			var data = row.getData();
-
-			if ( !data.children || data.children.length === 0 ) return;
-
-			var holder = document.createElement( "div" );
-			holder.classList.add( "p-2" );
-			holder.style.background = "rgba(255, 255, 255, 0.22)";
-			holder.style.backdropFilter = "blur(10px)";
-			holder.style.borderTop = "1px solid rgba(255, 255, 255, 0.35)";
-
-			var childTable = document.createElement( "div" );
-			holder.appendChild( childTable );
-
-			row.getElement().appendChild( holder );
-
-			new Tabulator( childTable, {
-				layout: "fitColumns",
-				data: data.children,
-				columns: [
-					{ title: "Task", field: "task" },
-					{ title: "Assigned To", field: "assignedTo" },
-					{ title: "Hours", field: "hours" },
-				]
-			} );
-		}
-	} );
-
-	const openDrawer = document.getElementById( "openSubmitDrawer" );
-	const closeDrawer = document.getElementById( "closeSubmitDrawer" );
-	const drawer = document.getElementById( "submitDrawer" );
-	const overlay = document.getElementById( "submitDrawerOverlay" );
-
-	openDrawer.addEventListener( "click", function ()
+	function updateMyApprovalsCount ()
 	{
-		overlay.classList.remove( "hidden" );
-		drawer.classList.remove( "translate-x-full" );
-	} );
+		$.ajax( {
+			url: "/TRRF/GetMyApprovalRequestList",
+			type: "GET",
 
-	function closeSubmitDrawer ()
-	{
-		drawer.classList.add( "translate-x-full" );
-		overlay.classList.add( "hidden" );
+			success: function ( response )
+			{
+				const count = Array.isArray( response.data )
+					? response.data.length
+					: 0;
+
+				const badge = $( "#myApprovalsCount" );
+				const bell = $( "#myApprovalsBell" );
+
+				if ( count > 0 )
+				{
+					badge.text( count );
+					badge.removeClass( "hidden" );
+
+					bell.addClass( "bell-ringing" );
+				}
+				else
+				{
+					badge.text( "" );
+					badge.addClass( "hidden" );
+
+					bell.removeClass( "bell-ringing" );
+				}
+			},
+
+			error: function ()
+			{
+				$( "#myApprovalsCount" ).addClass( "hidden" );
+				$( "#myApprovalsBell" ).removeClass( "bell-ringing" );
+			}
+		} );
 	}
 
-	closeDrawer.addEventListener( "click", closeSubmitDrawer );
-	overlay.addEventListener( "click", closeSubmitDrawer );
+	$( document ).ready( function ()
+	{
+		updateMyApprovalsCount();
+	} );
+
+	$( "#myApprovalsNotification" ).on( "click", function ()
+	{
+		const checkbox = $( "#myApprovalsOnly" );
+
+		checkbox.prop( "checked", !checkbox.prop( "checked" ) );
+		checkbox.trigger( "change" );
+	} );
+
+	let dashboardLoaded = false;
+
+	function openDashboardDrawer ()
+	{
+		$( "#dashboardOverlay" ).removeClass( "hidden" );
+
+		$( "#dashboardDrawer" )
+			.removeClass( "hidden" )
+			.removeClass( "translate-y-full" );
+		dashboardLoaded = false;
+
+		if ( !dashboardLoaded )
+		{
+			loadDashboardSummary();
+			loadMonthlyChart();
+			loadStatusChart();
+			loadCustomerChart();
+			loadProductChart();
+			loadRevisionChart();
+			loadMoldChart();
+			loadDeviationChart();
+			loadTopRequestedProductsTable();
+			loadMonthlyTrendTable();
+			loadDetailedBreakdownTable();
+			loadTRRFDistributionByLifeUtilization();
+
+			dashboardLoaded = true;
+		}
+	}
+
+	function closeDashboardDrawer ()
+	{
+
+		$( "#dashboardDrawer" )
+			.addClass( "translate-y-full" );
+
+		setTimeout( function ()
+		{
+
+			$( "#dashboardDrawer" ).addClass( "hidden" );
+			$( "#dashboardOverlay" ).addClass( "hidden" );
+
+		}, 300 );
+
+	}
+
+	// Open
+	$( "#dashboardBtn" ).on( "click", openDashboardDrawer );
+
+	// Close
+	$( "#closeDashboardDrawer, #dashboardOverlay" ).on( "click", closeDashboardDrawer );
+
+
+	const mpSwitch = document.getElementById( "mpSwitch" );
+const pdSwitch = document.getElementById( "pdSwitch" );
+
+
+
+
+
+const openDrawer = document.getElementById( "openSubmitDrawer" );
+const closeDrawer = document.getElementById( "closeSubmitDrawer" );
+const cancelDrawer = document.getElementById( "cancelSubmitDrawer" );
+const drawer = document.getElementById( "submitDrawer" );
+const overlay = document.getElementById( "submitDrawerOverlay" );
+const customerSelect = document.getElementById( "customerIdTxt" );
+const productIdInput = document.getElementById( "productIdTxt" );
+const productNameInput = document.getElementById( "productNameTxt" );
+const productOptions = document.getElementById( "productOptions" );
+
+	const datePreparedInput = document.getElementById( "datePreparedTxt" );
+
+	customerSelect.addEventListener("change", loadProductsByCustomer);
+
+async function loadProductsByCustomer() {
+
+    const customerId = customerSelect.value;
+
+    productIdTxt.value = "";
+    productNameInput.value = "";
+    productOptions.innerHTML = "";
+    productList = [];
+
+    if (!customerId) {
+        productNameInput.placeholder = "Add / Select product";
+        return;
+    }
+
+    productNameInput.placeholder = "Loading products...";
+
+    try {
+
+        const response = await fetch(
+            `@Url.Action("GetProductsByCustomer", "TRRF")?customerId=${customerId}`
+        );
+
+        if (!response.ok)
+            throw new Error("Failed to load products.");
+
+        productList = await response.json();
+
+        productOptions.innerHTML = "";
+
+        productList.forEach(product => {
+
+            const option = document.createElement("option");
+
+            option.value =
+                product.productName +
+                (product.modelpartno ? " - " + product.modelpartno : "");
+
+            option.dataset.productId = product.productId;
+            option.dataset.gml = product.gml;
+            option.dataset.modelpartno = product.modelpartno ?? "";
+
+            productOptions.appendChild(option);
+
+        });
+
+        productNameInput.placeholder = "Add / Select product";
+
+    }
+    catch (err) {
+
+        console.error(err);
+        productNameInput.placeholder = "Unable to load products";
+
+    }
+
+	}
+
+	productNameInput.addEventListener( "input", function ()
+	{
+
+		const selected = productList.find( p =>
+			( p.productName + ( p.modelpartno ? " - " + p.modelpartno : "" ) ) === this.value
+		);
+
+		if ( !selected )
+		{
+
+			productIdTxt.value = "";
+			partModelNoTxt.value = "";   // or $("#partModelNoTxt").val("");
+
+			return;
+		}
+
+		productIdTxt.value = selected.productId;
+
+		// Populate Part / Model #
+		partModelNoTxt.value = selected.modelpartno ?? "";
+
+		// Optional if you need the GML later
+		console.log( selected.gml );
+
+	} );
+
+mpSwitch.addEventListener( "change", function ()
+{
+	if ( mpSwitch.checked )
+	{
+		pdSwitch.checked = false;
+	}
+} );
+
+pdSwitch.addEventListener( "change", function ()
+{
+	if ( pdSwitch.checked )
+	{
+		mpSwitch.checked = false;
+	}
+} );
+
+function setDatePreparedToday ()
+{
+	const today = new Date().toISOString().split( "T" )[ 0 ];
+	datePreparedInput.value = today;
+}
+
+openDrawer.addEventListener( "click", async function ()
+{
+	overlay.classList.remove( "hidden" );
+	drawer.classList.remove( "translate-x-full" );
+
+	setDatePreparedToday();
+
+	await Promise.all( [
+		loadCustomers(),
+		//loadProducts(),
+		loadControl()
+	] );
+} );
+
+function closeSubmitDrawer ()
+{
+	drawer.classList.add( "translate-x-full" );
+	overlay.classList.add( "hidden" );
+}
+
+function closeApprovalDrawer ()
+{
+	drawer.classList.add( "translate-x-full" );
+	overlay.classList.add( "hidden" );
+}
+
+closeDrawer.addEventListener( "click", closeSubmitDrawer );
+cancelDrawer.addEventListener( "click", closeSubmitDrawer );
+overlay.addEventListener( "click", closeSubmitDrawer );
+
+
+let productList = [];
+
+async function loadProducts ()
+{
+	productNameInput.placeholder = "Loading products...";
+
+	try
+	{
+		const response = await fetch( "@Url.Action("GetProductLookup", "TRRF")" );
+
+		if ( !response.ok )
+		{
+			throw new Error( "Failed to load products" );
+		}
+
+		productList = await response.json();
+
+		productOptions.innerHTML = "";
+
+		productList.forEach( product =>
+		{
+			const option = document.createElement( "option" );
+			option.value = product.productName;
+			option.dataset.productId = product.productId;
+			productOptions.appendChild( option );
+		} );
+
+		productNameInput.placeholder = "Add / Select product";
+	} catch ( error )
+	{
+		console.error( error );
+		productNameInput.placeholder = "Unable to load products";
+	}
+}
+
+//function setProductValue ()
+//{
+//	const typedProduct = productNameInput.value.trim();
+
+//	if ( !typedProduct )
+//	{
+//		productIdInput.value = "";
+//		return;
+//	}
+
+//	const selectedProduct = productList.find( product =>
+//		product.productName.toLowerCase() === typedProduct.toLowerCase()
+//	);
+
+//	if ( selectedProduct )
+//	{
+//		productIdInput.value = selectedProduct.productId;
+//		return;
+//	}
+
+//	const largestProductId = productList.length > 0
+//		? Math.max( ...productList.map( product => Number( product.productId ) || 0 ) )
+//		: 0;
+
+//	productIdInput.value = largestProductId + 1;
+	//}
+
+	function setProductValue ()
+	{
+
+		const typedProduct = productNameInput.value.trim();
+
+		// Empty input
+		if ( !typedProduct )
+		{
+			productIdTxt.value = "";
+			partModelNoTxt.value = "";
+			return;
+		}
+
+		// Match "Product Name - Model"
+		const selectedProduct = productList.find( product =>
+			(
+				product.productName +
+				( product.modelpartno ? " - " + product.modelpartno : "" )
+			).toLowerCase() === typedProduct.toLowerCase()
+		);
+
+		// Existing product selected
+		if ( selectedProduct )
+		{
+
+			productIdTxt.value = selectedProduct.productId;
+			partModelNoTxt.value = selectedProduct.modelpartno ?? "";
+
+			// Optional
+			console.log( selectedProduct.gml );
+
+			return;
+		}
+
+		// New product entered
+		const largestProductId = productList.length > 0
+			? Math.max( ...productList.map( product => Number( product.productId ) || 0 ) )
+			: 0;
+
+		productIdTxt.value = largestProductId + 1;
+		partModelNoTxt.value = "";
+	}
+
+productNameInput.addEventListener( "input", setProductValue );
+productNameInput.addEventListener( "blur", setProductValue );
+
+
+const trrfNoInput = document.getElementById( "trrfNoTxt" );
+
+async function loadControl ()
+{
+	trrfNoInput.value = "Loading...";
+
+	try
+	{
+		const response = await fetch( "@Url.Action("GetTrrsControl", "TRRF")" );
+
+		if ( !response.ok )
+		{
+			throw new Error( "Failed to load TRRS control" );
+		}
+
+		const controls = await response.json();
+
+		if ( controls.length > 0 )
+		{
+			trrfNoInput.value = controls[ 0 ].controlDisplay;
+		} else
+		{
+			trrfNoInput.value = "";
+		}
+	} catch ( error )
+	{
+		console.error( error );
+		trrfNoInput.value = "";
+	}
+}
+
+
+async function loadCustomers ()
+{
+	customerSelect.innerHTML = `<option value="">Loading customers...</option>`;
+
+	try
+	{
+		const response = await fetch( "/TRRF/GetCustomerLookup" );
+
+		if ( !response.ok )
+		{
+			throw new Error( "Failed to load customers" );
+		}
+
+		const customers = await response.json();
+
+		customerSelect.innerHTML = `<option value="">Select customer</option>`;
+
+		customers.forEach( customer =>
+		{
+			const option = document.createElement( "option" );
+			option.value = customer.customerId;
+			option.textContent = customer.customerName;
+			customerSelect.appendChild( option );
+		} );
+	} catch ( error )
+	{
+		console.error( error );
+		customerSelect.innerHTML = `<option value="">Unable to load customers</option>`;
+	}
+	}
+
+
+
+	document.addEventListener( "DOMContentLoaded", function ()
+	{
+
+		const yearSelect = document.getElementById( "dashboardYear" );
+		const startYear = 2025;
+		const currentYear = new Date().getFullYear();
+
+		yearSelect.innerHTML = "";
+
+		// Show newest year first
+		for ( let year = currentYear; year >= startYear; year-- )
+		{
+			const option = document.createElement( "option" );
+			option.value = year;
+			option.textContent = year;
+
+			if ( year === currentYear )
+			{
+				option.selected = true;
+			}
+
+			yearSelect.appendChild( option );
+		}
+
+	} );
+
+
+	const btnAskMe = document.getElementById( "btnAskMe" );
+	const askMeDrawer = document.getElementById( "askMeDrawer" );
+	const askMeBackdrop = document.getElementById( "askMeBackdrop" );
+
+	const closeAskMeDrawer = document.getElementById( "closeAskMeDrawer" );
+
+	const btnLetsStart = document.getElementById( "btnLetsStart" );
+	const askMeWelcome = document.getElementById( "askMeWelcome" );
+	const askMeChat = document.getElementById( "askMeChat" );
+
+
+	// ============================================================
+	// OPEN ASK ME
+	// ============================================================
+
+	btnAskMe.addEventListener( "click", function ()
+	{
+
+		askMeDrawer.classList.remove( "translate-x-full" );
+		askMeBackdrop.classList.remove( "hidden" );
+
+	} );
+
+
+	// ============================================================
+	// CLOSE ASK ME
+	// ============================================================
+
+	function closeAskMe ()
+	{
+
+		askMeDrawer.classList.add( "translate-x-full" );
+		askMeBackdrop.classList.add( "hidden" );
+
+	}
+
+	closeAskMeDrawer.addEventListener( "click", closeAskMe );
+
+	askMeBackdrop.addEventListener( "click", closeAskMe );
+
+
+	// ============================================================
+	// LET'S START
+	// ============================================================
+
+	btnLetsStart.addEventListener( "click", function ()
+	{
+
+		// Hide welcome screen
+		askMeWelcome.classList.add( "hidden" );
+
+		// Show chat screen
+		askMeChat.classList.remove( "hidden" );
+		askMeChat.classList.add( "flex" );
+
+		// Focus question box
+		document.getElementById( "aiQuestion" ).focus();
+
+	} );
 </script>
